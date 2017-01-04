@@ -3,13 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ButtonSerie : MonoBehaviour {
+    private List<Button> buttonTable = new List<Button>();
+    private int noPlayer;
 
-	// Use this for initialization
+    public ButtonSerie(int player, int stacks)
+    {
+        noPlayer = player;
+        for (int i = 0; i < stacks; i++)
+        {
+            buttonTable.Add(new Button());
+        }
+    }
+
 	void Start () {
-		
+        
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		
 	}

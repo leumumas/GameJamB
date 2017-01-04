@@ -10,15 +10,19 @@ public class Character : MonoBehaviour {
                 speed,
                 playerNumber;
     //Movements
-    private float moveY = 0f;
+    private float moveY = 0f, moveX = 0f,
+                reactionTime;
     //Triggers
     public bool door;
+    Animator anim;
 
     void Start () {
+        anim = GetComponent<Animator>();
         hearts = 3;
-        difficulty = 0;
-        speed = 10;
+        difficulty = 15;
+        speed = 8;
         door = false;
+        reactionTime = 5f;
 	}
 
 	void Update () {
@@ -28,10 +32,18 @@ public class Character : MonoBehaviour {
             case 0:
                 // Player 1 moving left or right
                 if (Input.GetKey(KeyCode.A))
+                {
                     transform.position += Vector3.left * speed * Time.deltaTime;
-
+                    moveX = -1.0f;
+                }
                 else if (Input.GetKey(KeyCode.D))
+                {
                     transform.position += Vector3.right * speed * Time.deltaTime;
+                    moveX = 1.0f;
+                }
+                else
+                    moveX = 0f;
+
 
                 //Player 1 moving up or down
                 if (Input.GetKey(KeyCode.W) && door)
@@ -48,13 +60,20 @@ public class Character : MonoBehaviour {
             case 1:
                 // Player 2 moving left or right
                 if (Input.GetKey("left"))
+                {
                     transform.position += Vector3.left * speed * Time.deltaTime;
-
+                    moveX = -1.0f;
+                }
                 else if (Input.GetKey("right"))
+                {
                     transform.position += Vector3.right * speed * Time.deltaTime;
+                    moveX = 1.0f;
+                }
+                else
+                    moveX = 0f;
 
-                //Player 2 moving up or down
-                if (Input.GetKey("up") && door)
+        //Player 2 moving up or down
+        if (Input.GetKey("up") && door)
                 {
                     transform.position += Vector3.up * speed * Time.deltaTime;
                     moveY = 1;
@@ -69,6 +88,7 @@ public class Character : MonoBehaviour {
                 Debug.Log("What the fuck");
                 break;
         }
+        anim.SetFloat("Moving", moveX);
         Debug.Log(playerNumberB + "" + door);
     }
 }
