@@ -12,15 +12,16 @@ public class Character : MonoBehaviour {
     private float moveY = 0f, moveX = 0f;
     public float reactionTime;
     //Triggers
-    public bool door, item, inside, shield;
-    public GameObject crItem;
+    public bool door, item, outside, shield;
+    public GameObject crItem, triggerPop;
     Animator anim;
+    //public Sprite trigger;
 
     void Start () {
         anim = GetComponent<Animator>();
         hearts = 3;
         difficulty = 15;
-        speed = 8;
+        speed = 5;
         door = false;
         reactionTime = 5f;
         shield = false;
@@ -49,11 +50,19 @@ public class Character : MonoBehaviour {
                 //Player 1 moving up or down
                 if (Input.GetKey(KeyCode.W) && door)
                 {
+                    outside = false;
+                    GameManager.instance.setTownVisibility(playerNumberB, outside);
                     moveY = 1;
                 }
                 else if (Input.GetKey(KeyCode.S) && item)
                 {
                     updateStats(crItem.GetComponent<Items>());
+                    moveY = 1;
+                }
+                else if (Input.GetKey(KeyCode.S) && door)
+                {
+                    outside = true;
+                    GameManager.instance.setTownVisibility(playerNumberB, outside);
                     moveY = 1;
                 }
                 else
@@ -78,12 +87,20 @@ public class Character : MonoBehaviour {
                 //Player 2 moving up or down
                 if (Input.GetKey("up") && door)
                 {
+                    outside = false;
+                    GameManager.instance.setTownVisibility(playerNumberB, outside);
                     moveY = 1;
                 }
                 else if (Input.GetKey("down") && item)
                 {
                     updateStats(crItem.GetComponent<Items>());
-                    moveY = 1;
+                    moveY = -1;
+                }
+                else if (Input.GetKey("down") && door)
+                {
+                    outside = true;
+                    GameManager.instance.setTownVisibility(playerNumberB, outside);
+                    moveY = -1;
                 }
                 else
                     moveY = 0;
@@ -93,6 +110,10 @@ public class Character : MonoBehaviour {
                 Debug.Log("What the fuck");
                 break;
         }
+        if (door)
+            triggerPop.SetActive(true);
+        else
+            triggerPop.SetActive(false);
         anim.SetFloat("Moving", moveX);
         Debug.Log(playerNumberB + "" + door);
     }

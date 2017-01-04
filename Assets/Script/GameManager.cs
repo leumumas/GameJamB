@@ -12,7 +12,11 @@ public class GameManager : MonoBehaviour
     private List<Character> player = new List<Character>();
     private GameObject menuCamera;
     public GameObject playerPrefab;
-    public Sprite[] townSprite = new Sprite[2];
+    public GameObject[] townSprite = new GameObject[2];
+    public int nbHouseP1;
+    public int nbHouseP2;
+    public GameObject[] HousesP1 = new GameObject[10];
+    public GameObject[] HousesP2 = new GameObject[10];
 
     private void Awake()
     {
@@ -59,8 +63,21 @@ public class GameManager : MonoBehaviour
         switch (nbPlayer)
         {
             case 0: player[1].difficulty += it.promptItem;
-                player[1].reactionTime += it.reactionItem; break;
-            case 1: player[0].updateStats(it); break;
+                    player[1].reactionTime += it.reactionItem; break;
+            case 1: player[0].difficulty += it.promptItem;
+                    player[0].reactionTime += it.reactionItem; break;
+            default: break;
+        }
+    }
+
+    public void setTownVisibility(int nbPlayer, bool view)
+    {
+        townSprite[nbPlayer].SetActive(view);
+        switch (nbPlayer)
+        {
+            case 0:  HousesP1[nbHouseP1].SetActive(!view); break;
+                
+            case 1: HousesP2[nbHouseP2].SetActive(!view); break;
             default: break;
         }
     }
