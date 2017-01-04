@@ -17,7 +17,7 @@ public class Character : MonoBehaviour {
         difficulty = 0;
         speed = 10;
 	}
-	
+
 	void Update () {
 
         switch (playerNumberB)
@@ -60,5 +60,10 @@ public class Character : MonoBehaviour {
                 Debug.Log("What the fuck");
                 break;
         }
+    }
+
+    void OnTriggerStay (Collider collider)
+    {
+        Debug.Log("Triggered");
     }
 }
