@@ -9,6 +9,14 @@ public class GameManager : MonoBehaviour
     Timer timer;
     private GameObject instanciatedObject;
     private List<Character> player = new List<Character>();
+    private GameObject menuCamera;
+
+    private void Awake()
+    {
+        menuCamera = GameObject.Find("Menu Camera");
+        setStartLevel();
+    }
+
 
     // Use this for initialization
     void Start()
@@ -18,7 +26,7 @@ public class GameManager : MonoBehaviour
         timer.StartTimer();
         for (int i = 0; i < playerNumber; i++)
         {
-            player.Add(instanciatedObject.GetComponent<Character>());
+            //player.Add(instanciatedObject.GetComponent<Character>());
         }
     }
 
@@ -26,5 +34,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
+    }
+
+    void setStartLevel()
+    {
+        cycles = menuCamera.GetComponent<Menu>().nbCycles;
     }
 }

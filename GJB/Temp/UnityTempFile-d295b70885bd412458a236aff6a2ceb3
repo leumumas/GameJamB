@@ -79,6 +79,9 @@
 -define:UNITY_EDITOR_WIN
 -define:ENABLE_VSTU
 Assets/Character.cs
+Assets/Script/GameManager.cs
+Assets/Script/Menu.cs
+Assets/Script/Timer.cs
 -r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Runtime.Serialization.dll"
 -r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Xml.Linq.dll"
 -r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\UnityScript.dll"
