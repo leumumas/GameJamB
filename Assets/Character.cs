@@ -11,11 +11,14 @@ public class Character : MonoBehaviour {
                 playerNumber;
     //Movements
     private float moveY = 0f;
+    //Triggers
+    public bool door;
 
     void Start () {
         hearts = 3;
         difficulty = 0;
         speed = 10;
+        door = false;
 	}
 
 	void Update () {
@@ -60,10 +63,6 @@ public class Character : MonoBehaviour {
                 Debug.Log("What the fuck");
                 break;
         }
-    }
-
-    void OnTriggerStay (Collider collider)
-    {
-        Debug.Log("Triggered");
+        Debug.Log(playerNumberB + "" + door);
     }
 }
