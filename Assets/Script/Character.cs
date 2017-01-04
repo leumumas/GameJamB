@@ -5,15 +5,14 @@ using UnityEngine;
 public class Character : MonoBehaviour {
     public int playerNumberB;
     //Attributes Character
-    private int hearts,
+    public int hearts,
                 difficulty,
-                speed,
-                playerNumber;
+                speed;
     //Movements
-    private float moveY = 0f, moveX = 0f,
-                reactionTime;
+    private float moveY = 0f, moveX = 0f;
+    public float reactionTime;
     //Triggers
-    public bool door, item, inside;
+    public bool door, item, inside, shield;
     public GameObject crItem;
     Animator anim;
 
@@ -24,6 +23,7 @@ public class Character : MonoBehaviour {
         speed = 8;
         door = false;
         reactionTime = 5f;
+        shield = false;
 	}
 
 	void Update () {
@@ -53,9 +53,7 @@ public class Character : MonoBehaviour {
                 }
                 else if (Input.GetKey(KeyCode.S) && item)
                 {
-                    Debug.Log(crItem.name);
-                    Destroy(crItem);
-                    crItem = null;
+                    updateStats(crItem.GetComponent<Items>());
                     moveY = 1;
                 }
                 else
@@ -84,8 +82,7 @@ public class Character : MonoBehaviour {
                 }
                 else if (Input.GetKey("down") && item)
                 {
-                    Destroy(crItem);
-                    crItem = null;
+                    updateStats(crItem.GetComponent<Items>());
                     moveY = 1;
                 }
                 else
@@ -98,5 +95,24 @@ public class Character : MonoBehaviour {
         }
         anim.SetFloat("Moving", moveX);
         Debug.Log(playerNumberB + "" + door);
+    }
+
+    public void updateStats (Items it)
+    {
+        //Debug.Log(crItem.name);
+        if (it.isBonus)
+        {
+            difficulty += it.promptItem;
+            reactionTime += it.reactionItem;
+            if (it.promptItem == 0 && it.reactionItem == 0)
+                shield = true;
+        }
+        else
+        {
+            GameManager.instance.malusUpdate(it, playerNumberB);
+        }
+        Destroy(crItem);
+        crItem = null;
+        item = false;
     }
 }
