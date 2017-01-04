@@ -13,7 +13,8 @@ public class Character : MonoBehaviour {
     private float moveY = 0f, moveX = 0f,
                 reactionTime;
     //Triggers
-    public bool door;
+    public bool door, item, inside;
+    public GameObject crItem;
     Animator anim;
 
     void Start () {
@@ -48,13 +49,17 @@ public class Character : MonoBehaviour {
                 //Player 1 moving up or down
                 if (Input.GetKey(KeyCode.W) && door)
                 {
-                    transform.position += Vector3.up * speed * Time.deltaTime;
                     moveY = 1;
                 }
-                else if (Input.GetKey(KeyCode.S))
-                    moveY = -1;
+                else if (Input.GetKey(KeyCode.S) && item)
+                {
+                    Debug.Log(crItem.name);
+                    Destroy(crItem);
+                    crItem = null;
+                    moveY = 1;
+                }
                 else
-                    moveY = 0;
+                moveY = 0;
                 Debug.Log("1Y"+moveY);
                 break;
             case 1:
@@ -72,14 +77,17 @@ public class Character : MonoBehaviour {
                 else
                     moveX = 0f;
 
-        //Player 2 moving up or down
-        if (Input.GetKey("up") && door)
+                //Player 2 moving up or down
+                if (Input.GetKey("up") && door)
                 {
-                    transform.position += Vector3.up * speed * Time.deltaTime;
                     moveY = 1;
                 }
-                else if (Input.GetKey("down"))
-                    moveY = -1;
+                else if (Input.GetKey("down") && item)
+                {
+                    Destroy(crItem);
+                    crItem = null;
+                    moveY = 1;
+                }
                 else
                     moveY = 0;
                 Debug.Log("2Y"+moveY);
