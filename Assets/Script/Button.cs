@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class Button : MonoBehaviour {
     public GameObject[] image;
-    private int noPlayer;
     public int key;
 
-    public Button (int player)
+    public Button ()
     {
-        noPlayer = player;
         key = Random.Range(0, 4);
     }
 
