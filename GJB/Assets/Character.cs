@@ -10,15 +10,14 @@ public class Character : MonoBehaviour {
                 speed,
                 playerNumber;
     //Movements
-    private float moveX = 0f,
-                  moveY = 0f;
+    private float moveY = 0f;
 
     void Start () {
         hearts = 3;
         difficulty = 0;
-        speed = 50;
+        speed = 10;
 	}
-	
+
 	void Update () {
 
         switch (playerNumberB)
@@ -26,12 +25,10 @@ public class Character : MonoBehaviour {
             case 0:
                 // Player 1 moving left or right
                 if (Input.GetKey(KeyCode.A))
-                    moveX = -1;
+                    transform.position += Vector3.left * speed * Time.deltaTime;
+
                 else if (Input.GetKey(KeyCode.D))
-                    moveX = 1;
-                else
-                    moveX = 0;
-                Debug.Log("1X"+moveX);
+                    transform.position += Vector3.right * speed * Time.deltaTime;
 
                 //Player 1 moving up or down
                 if (Input.GetKey(KeyCode.W))
@@ -45,12 +42,10 @@ public class Character : MonoBehaviour {
             case 1:
                 // Player 2 moving left or right
                 if (Input.GetKey("left"))
-                    moveX = -1;
+                    transform.position += Vector3.left * speed * Time.deltaTime;
+
                 else if (Input.GetKey("right"))
-                    moveX = 1;
-                else
-                    moveX = 0;
-                Debug.Log("2X"+moveX);
+                    transform.position += Vector3.right * speed * Time.deltaTime;
 
                 //Player 1 moving up or down
                 if (Input.GetKey("up"))
@@ -65,5 +60,10 @@ public class Character : MonoBehaviour {
                 Debug.Log("What the fuck");
                 break;
         }
+    }
+
+    void OnTriggerStay (Collider collider)
+    {
+        Debug.Log("Triggered");
     }
 }
