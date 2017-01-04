@@ -3,26 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour {
+    //Attributes Character
     private int hearts,
                 difficulty,
-                speed;
-    private float movex = 0f;
+                speed,
+                playerNumber;
+    //Movements
+    private float moveX = 0f,
+                  moveY = 0f;
 
-    // Use this for initialization
     void Start () {
         hearts = 3;
         difficulty = 0;
         speed = 50;
 	}
 	
-	// Update is called once per frame
 	void Update () {
+
+        // Player 1 moving left or right
         if (Input.GetKey(KeyCode.A))
-            movex = -1;
+            moveX = -1;
         else if (Input.GetKey(KeyCode.D))
-            movex = 1;
+            moveX = 1;
         else
-            movex = 0;
-        Debug.Log(movex);
+            moveX = 0;
+        
+        //Player 1 moving up or down
+        if (Input.GetKey(KeyCode.W))
+            moveY = 1;
+        else if (Input.GetKey(KeyCode.S))
+            moveY = -1;
+        else
+            moveY = 0;
+        Debug.Log(moveY);
     }
 }
