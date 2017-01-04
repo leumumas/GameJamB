@@ -7,6 +7,7 @@ public class Items : MonoBehaviour {
     private bool isBonus;
     //what type of item
     private int type;
+    private string name;
 
     private void Awake()
     {
@@ -15,15 +16,13 @@ public class Items : MonoBehaviour {
 
     void Start () {
         switch (type) {
-            case 0: SetupItems("Instant", true, 0, -1); break;
-            case 1: SetupItems("Time", false, 0, 1); break;
-            case 2: SetupItems("Instant", true, 0, 1); break;
-            case 3: SetupItems("Instant", true, 0, 1); break;
+            case 0: SetupItems("Instant Orb", true, 0, -1); break;
+            case 1: SetupItems("Lag Orb", false, 0, 1); break;
+            case 2: SetupItems("Cover", true, -1, 1); break;
+            case 3: SetupItems("Rain", false, 1, 1); break;
             case 4: SetupItems("shield", true, 0, 0); break;
             default: break;
-
         }
-		
 	}
 
 	void Update () {

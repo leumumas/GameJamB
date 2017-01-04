@@ -14,8 +14,8 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        //menuCamera = GameObject.Find("Menu Camera");
-        setStartLevel();
+        /*menuCamera = GameObject.Find("Menu Camera");
+        setStartLevel();*/
     }
 
 
@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
             instanciatedObject.name = "Player_" + i;
             player.Add(instanciatedObject.GetComponent<Character>());
             player[i].GetComponentInChildren<Camera>().Render();
-            player[i].GetComponentInChildren<Camera>().rect=new Rect(0,i*0.5f,1,0.5f);
+            player[i].GetComponentInChildren<Camera>().rect=new Rect(0,i*-0.5f+0.5f,1,0.5f);
             player[i].GetComponent<Character>().playerNumberB = i;
             player[i].GetComponentInChildren<Camera>().transform.parent = player[i].transform;
         }
@@ -45,6 +45,6 @@ public class GameManager : MonoBehaviour
 
     void setStartLevel()
     {
-        //cycles = menuCamera.GetComponent<Menu>().nbCycles;
+        cycles = menuCamera.GetComponent<Menu>().nbCycles;
     }
 }
