@@ -30,12 +30,12 @@ public class TransitionP2 : MonoBehaviour
         }
         else
         {
-            transform.position += Vector3.down * 15 * Time.deltaTime;
+            transform.position += Vector3.down * 8 * Time.deltaTime;
         }
     }
 
     void vitesseDefilement()
     {
-        speed = System.Math.Abs(1.27f * (Time.time - 5));
+        speed = System.Math.Abs(1f * (Time.time - 5f));
     }
 }
