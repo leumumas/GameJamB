@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        menuCamera = GameObject.Find("Menu Camera");
+        //menuCamera = GameObject.Find("Menu Camera");
         setStartLevel();
     }
 
@@ -45,6 +45,6 @@ public class GameManager : MonoBehaviour
 
     void setStartLevel()
     {
-        cycles = menuCamera.GetComponent<Menu>().nbCycles;
+        //cycles = menuCamera.GetComponent<Menu>().nbCycles;
     }
 }
