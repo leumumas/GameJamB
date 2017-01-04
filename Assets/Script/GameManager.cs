@@ -11,31 +11,30 @@ public class GameManager : MonoBehaviour
     private List<Character> player = new List<Character>();
     private GameObject menuCamera;
     public GameObject playerPrefab;
-    private Transform cameraPos;
 
     private void Awake()
     {
         menuCamera = GameObject.Find("Menu Camera");
         setStartLevel();
-        DestroyImmediate(GameObject.Find("Menu Camera"));
     }
 
 
     // Use this for initialization
     void Start()
     {
-        cycles = 2;
         timer = GetComponent<Timer>();
         timer.StartTimer();
-        cameraPos = Camera.main.transform;
         for (int i = 0; i < playerNumber; i++)
         {
-            instanciatedObject = (GameObject)Instantiate(playerPrefab, new Vector3(cameraPos.position.x, cameraPos.position.y, cameraPos.position.z+2), Quaternion.identity);
-            //instanciatedObject.transform.parent.position = new Vector3(0,0,0);
+            instanciatedObject = (GameObject)Instantiate(playerPrefab,new Vector3(i*-80+40, i*-20, 0), Quaternion.identity);
             instanciatedObject.name = "Player_" + i;
             player.Add(instanciatedObject.GetComponent<Character>());
+            player[i].GetComponentInChildren<Camera>().Render();
+            player[i].GetComponentInChildren<Camera>().rect=new Rect(0,i*0.5f,1,0.5f);
             player[i].GetComponent<Character>().playerNumberB = i;
+            player[i].GetComponentInChildren<Camera>().transform.parent = player[i].transform;
         }
+        Destroy(menuCamera);
     }
 
     // Update is called once per frame
