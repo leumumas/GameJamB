@@ -34,8 +34,11 @@ public class Character : MonoBehaviour {
                     transform.position += Vector3.right * speed * Time.deltaTime;
 
                 //Player 1 moving up or down
-                if (Input.GetKey(KeyCode.W))
+                if (Input.GetKey(KeyCode.W) && door)
+                {
+                    transform.position += Vector3.up * speed * Time.deltaTime;
                     moveY = 1;
+                }
                 else if (Input.GetKey(KeyCode.S))
                     moveY = -1;
                 else
@@ -50,9 +53,12 @@ public class Character : MonoBehaviour {
                 else if (Input.GetKey("right"))
                     transform.position += Vector3.right * speed * Time.deltaTime;
 
-                //Player 1 moving up or down
-                if (Input.GetKey("up"))
+                //Player 2 moving up or down
+                if (Input.GetKey("up") && door)
+                {
+                    transform.position += Vector3.up * speed * Time.deltaTime;
                     moveY = 1;
+                }
                 else if (Input.GetKey("down"))
                     moveY = -1;
                 else
