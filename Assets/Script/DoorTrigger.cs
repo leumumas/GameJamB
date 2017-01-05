@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DoorTrigger : MonoBehaviour {
 
+    public int nbHouse = 0;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -16,10 +18,26 @@ public class DoorTrigger : MonoBehaviour {
     //When in front of door
     void OnTriggerEnter2D(Collider2D collider) {
         collider.gameObject.GetComponent<Character>().door = true;
+        int nbPlayer = collider.gameObject.GetComponent<Character>().playerNumberB;
+        switch(nbPlayer)
+        {
+            case 0: GameManager.instance.nbHouseP1 = nbHouse; break;
+                
+            case 1: GameManager.instance.nbHouseP2 = nbHouse; break;
+            default: break;
+        }
     }
     //When quitting door
     void OnTriggerExit2D(Collider2D collider)
     {
+        int nbPlayer = collider.gameObject.GetComponent<Character>().playerNumberB;
         collider.gameObject.GetComponent<Character>().door = false;
+        switch (nbPlayer)
+        {
+            case 0: GameManager.instance.nbHouseP1 = 0; break;
+
+            case 1: GameManager.instance.nbHouseP2 = 0; break;
+            default: break;
+        }
     }
 }
