@@ -10,19 +10,21 @@ public class GameManager : MonoBehaviour
     int cycles,
         playerNumber = 2;
     Timer timer;
+    bool firstRound;
     private GameObject instanciatedObject;
-    private List<Character> player = new List<Character>();
+    public List<Character> player = new List<Character>();
     private GameObject menuCamera;
     public GameObject playerPrefab;
-    public GameObject[] townSprite = new GameObject[2];
+    GameObject[] townSprite;
     public int nbHouseP1;
     public int nbHouseP2;
-    public GameObject[] HousesP1 = new GameObject[10];
-    public GameObject[] HousesP2 = new GameObject[10];
+    GameObject[] HousesP1 = new GameObject[10];
+    GameObject[] HousesP2 = new GameObject[10];
     public List<GameObject> SpawnPointP1 = new List<GameObject>();
     public List<GameObject> SpawnPointP2 = new List<GameObject>();
-    public float time = 30;
+    public float time = 60;
     public Slider itemSlidP1, itemSlidP2;
+    public GameObject timerObject;
 
     private void Awake()
     {
@@ -30,6 +32,7 @@ public class GameManager : MonoBehaviour
             instance = this;
         else if (instance != this)
             Destroy(gameObject);
+        DontDestroyOnLoad(gameObject);
         menuCamera = GameObject.Find("Menu Camera");
         setStartLevel();
     }
@@ -38,9 +41,8 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        time = 30;
-        DontDestroyOnLoad(gameObject);
-        timer = GetComponent<Timer>();
+        time = 60;
+        timer = GameObject.Find("Timer").GetComponent<Timer>();
         timer.StartTimer();
         for (int i = 0; i < playerNumber; i++) //instancie les personnages dynamiquement
         {
@@ -53,7 +55,8 @@ public class GameManager : MonoBehaviour
             player[i].GetComponentInChildren<Camera>().transform.parent = player[i].transform;
         }
         player[0].GetComponentInChildren<AudioListener>().enabled = true;
-        Destroy(menuCamera);
+        townSprite = GameObject.FindGameObjectsWithTag("Background");
+        setDoors();
     }
 
     // Update is called once per frame
@@ -70,11 +73,13 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                Destroy(menuCamera);
                 SceneManager.LoadScene("End");
             }
         }
         if (timer.minutes <= 0)
         {
+            timer = GameObject.Find("Timer").GetComponent<Timer>();
             timer.StartTimer();
         }
         itemSlidP1.value = (float)player[0].itemsLeft / 6f;
@@ -106,8 +111,34 @@ public class GameManager : MonoBehaviour
         {
             case 0:  HousesP1[nbHouseP1].SetActive(!view); break;
                 
-            case 1: HousesP2[nbHouseP2].SetActive(!view); break;
+            case 1:  HousesP2[nbHouseP2].SetActive(!view); break;
             default: break;
+        }
+    }
+
+    public void setDoors()
+    {
+        for (int i = 0; i < playerNumber; i++)
+        {
+            for (int j = 0; j < 10; j++)
+            {
+                string house = "Square " + (j + 1) + " " + (i+1);
+                switch (i)
+                {
+                    case 0: HousesP1[j] = GameObject.Find(house); break;
+                    case 1: HousesP2[j] = GameObject.Find(house); break;
+                    default: break;
+                }
+            }
+        }
+        foreach (GameObject hou in HousesP1)
+        {
+            Debug.Log(hou.name);
+            hou.SetActive(false);
+        }
+        foreach (GameObject hou in HousesP2)
+        {
+            hou.SetActive(false);
         }
     }
 }

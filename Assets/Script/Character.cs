@@ -19,6 +19,7 @@ public class Character : MonoBehaviour {
     public Sprite Robot;
     public RuntimeAnimatorController robotAnim;
     public int itemsLeft;
+    public int nbBonus, nbMalus;
 
     void Start () {
         DontDestroyOnLoad(gameObject);
@@ -28,6 +29,7 @@ public class Character : MonoBehaviour {
         difficulty = 15;
         speed = 5;
         door = false;
+        item = false;
         reactionTime = 5f;
         shield = false;
         if (playerNumberB == 1)
@@ -35,7 +37,9 @@ public class Character : MonoBehaviour {
             GetComponentInParent<SpriteRenderer>().sprite = Robot;
             anim.runtimeAnimatorController = robotAnim;
         }
-	}
+        nbBonus = 0;
+        nbMalus = 0;
+    }
 
 	void Update () {
 
@@ -141,18 +145,31 @@ public class Character : MonoBehaviour {
         //Debug.Log(crItem.name);
         if (it.isBonus)
         {
-            difficulty += it.promptItem;
-            reactionTime += it.reactionItem;
-            if (it.promptItem == 0 && it.reactionItem == 0)
-                shield = true;
+            if (nbBonus < 3)
+            {
+                difficulty += it.promptItem;
+                reactionTime += it.reactionItem;
+                if (it.promptItem == 0 && it.reactionItem == 0)
+                    shield = true;
+                Destroy(crItem);
+                nbBonus += 1;
+                itemsLeft -= 1;
+                crItem = null;
+                item = false;
+            }
         }
         else
         {
-            GameManager.instance.malusUpdate(it, playerNumberB);
+            if (nbMalus < 3)
+            {
+                GameManager.instance.malusUpdate(it, playerNumberB);
+                Destroy(crItem);
+                nbMalus += 1;
+                itemsLeft -= 1;
+                crItem = null;
+                item = false;
+            }
+                
         }
-        itemsLeft -= 1;
-        Destroy(crItem);
-        crItem = null;
-        item = false;
     }
 }
