@@ -22,7 +22,6 @@ public class Character : MonoBehaviour {
     public int nbBonus, nbMalus;
 
     void Start () {
-        DontDestroyOnLoad(gameObject);
         itemsLeft = 6;
         anim = GetComponent<Animator>();
         hearts = 3;
