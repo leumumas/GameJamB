@@ -21,9 +21,9 @@ public class DoorTrigger : MonoBehaviour {
         int nbPlayer = collider.gameObject.GetComponent<Character>().playerNumberB;
         switch(nbPlayer)
         {
-            case 0: GameManager.instance.nbHouseP1 = nbHouse; break;
+            case 0: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP1 = nbHouse; break;
                 
-            case 1: GameManager.instance.nbHouseP2 = nbHouse; break;
+            case 1: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP2 = nbHouse; break;
             default: break;
         }
     }
@@ -34,9 +34,9 @@ public class DoorTrigger : MonoBehaviour {
         collider.gameObject.GetComponent<Character>().door = false;
         switch (nbPlayer)
         {
-            case 0: GameManager.instance.nbHouseP1 = 0; break;
+            case 0: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP1 = 0; break;
 
-            case 1: GameManager.instance.nbHouseP2 = 0; break;
+            case 1: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP2 = 0; break;
             default: break;
         }
     }
