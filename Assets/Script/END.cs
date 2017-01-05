@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class END : MonoBehaviour {
 
     int[] Wins = new int[2];
-	// Use this for initialization
+
 	void Awake ()
     {
         Destroy(GameObject.Find("Player_0"));
@@ -16,14 +16,14 @@ public class END : MonoBehaviour {
         Destroy(GameObject.Find("ManagerObject"));
     }
 	
-	// Update is called once per frame
+
 	void Update () {
 		
 	}
 
     public void restartGame()
     {
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("OpenMenu");
     }
 
     public void quitGame()

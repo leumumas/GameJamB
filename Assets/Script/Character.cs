@@ -110,6 +110,10 @@ public class Character : MonoBehaviour {
                     outside = false;
                     GameManager.instance.setTownVisibility(playerNumberB, outside);
                     moveY = 1;
+                    if (outside == false)
+                    {
+
+                    }
                 }
                 else if (Input.GetKey(KeyCode.S) && item)
                 {
