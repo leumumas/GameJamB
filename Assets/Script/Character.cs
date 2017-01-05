@@ -25,7 +25,6 @@ public class Character : MonoBehaviour {
     private KeyCode currentKey;
 
     void Start () {
-        DontDestroyOnLoad(gameObject);
         itemsLeft = 6;
         anim = GetComponent<Animator>();
         hearts = 3;
