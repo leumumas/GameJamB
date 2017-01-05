@@ -20,8 +20,8 @@ public class GameManager : MonoBehaviour
     public int nbHouseP2;
     GameObject[] HousesP1 = new GameObject[10];
     GameObject[] HousesP2 = new GameObject[10];
-    public List<GameObject> SpawnPointP1 = new List<GameObject>();
-    public List<GameObject> SpawnPointP2 = new List<GameObject>();
+    public List<GameObject> SpawnPointP1;
+    public List<GameObject> SpawnPointP2;
     public float time = 60;
     Slider itemSlidP1, itemSlidP2;
     public GameObject timerObject;
@@ -86,6 +86,9 @@ public class GameManager : MonoBehaviour
                 hou.SetActive(false);
             }
             start = false;
+            townSprite = GameObject.FindGameObjectsWithTag("Background");
+            SpawnPointP1 = new List<GameObject>(GameObject.FindGameObjectsWithTag("InsideP1"));
+            SpawnPointP2 = new List<GameObject>(GameObject.FindGameObjectsWithTag("insideP2"));
             GetComponentInParent<BonusGenerator>().beginning();
             if (!firstRound)
                 Characters();
@@ -108,6 +111,8 @@ public class GameManager : MonoBehaviour
             timer.minutes = 0;
             if (cycles > 0)
             {
+                SpawnPointP1.Clear();
+                SpawnPointP2.Clear();
                 start = true;
                 SceneManager.LoadScene("Samuel");
             }

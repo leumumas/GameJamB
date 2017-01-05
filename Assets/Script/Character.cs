@@ -107,7 +107,7 @@ public class Character : MonoBehaviour {
                 //Player 1 moving up or down
                 if (Input.GetKey(KeyCode.W) && door)
                 {
-                    outside = false;
+                   outside = false;
                      GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
                     moveY = 1;
                     if (outside == false)
