@@ -1,29 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Timer : MonoBehaviour {
 
 
-    public static float timer = 480;
+    public static float timer = 0;
     public bool timeStarted = false;
-    int hours, minutes;
-
-    public int Minutes
-    {
-        get
-        {
-            return minutes;
-        }
-    }
-
-    public int Hours
-    {
-        get
-        {
-            return hours;
-        }
-    }
+    public int minutes;
+    public Slider timerSlider;
+    
 
     void Start()
     {
@@ -39,6 +26,7 @@ public class Timer : MonoBehaviour {
     {
         timeStarted = false;
         enabled = false;
+        timer = 0;
     }
 
     void Update()
@@ -47,9 +35,9 @@ public class Timer : MonoBehaviour {
         {
             Debug.Log("salut");
             timer = timer + Time.deltaTime * 2;
-            hours = (int)timer / 60;
-            minutes = (int)timer % 60;
-            // Debug.Log(hours + ":" + minutes);
+            timerSlider.value = timer / GameManager.instance.time;
+            minutes = (int)timer;
+            Debug.Log(timer);
         }
     }
 }

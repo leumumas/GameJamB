@@ -7,7 +7,8 @@ public class Character : MonoBehaviour {
     //Attributes Character
     public int hearts,
                 difficulty,
-                speed;
+                speed,
+                wins;
     //Movements
     private float moveY = 0f, moveX = 0f;
     public float reactionTime;
@@ -15,9 +16,13 @@ public class Character : MonoBehaviour {
     public bool door, item, outside, shield;
     public GameObject crItem, triggerPop;
     Animator anim;
-    //public Sprite trigger;
+    public Sprite Robot;
+    public RuntimeAnimatorController robotAnim;
+    public int itemsLeft;
 
     void Start () {
+        DontDestroyOnLoad(gameObject);
+        itemsLeft = 6;
         anim = GetComponent<Animator>();
         hearts = 3;
         difficulty = 15;
@@ -25,6 +30,11 @@ public class Character : MonoBehaviour {
         door = false;
         reactionTime = 5f;
         shield = false;
+        if (playerNumberB == 1)
+        {
+            GetComponentInParent<SpriteRenderer>().sprite = Robot;
+            anim.runtimeAnimatorController = robotAnim;
+        }
 	}
 
 	void Update () {
@@ -56,7 +66,11 @@ public class Character : MonoBehaviour {
                 }
                 else if (Input.GetKey(KeyCode.S) && item)
                 {
-                    updateStats(crItem.GetComponent<Items>());
+                    if (itemsLeft > 0)
+                    {
+                        if (!outside)
+                            updateStats(crItem.GetComponent<Items>());
+                    }
                     moveY = 1;
                 }
                 else if (Input.GetKey(KeyCode.S) && door)
@@ -93,8 +107,12 @@ public class Character : MonoBehaviour {
                 }
                 else if (Input.GetKey("down") && item)
                 {
-                    updateStats(crItem.GetComponent<Items>());
-                    moveY = -1;
+                    if (itemsLeft > 0)
+                    {
+                        if (!outside)
+                            updateStats(crItem.GetComponent<Items>());
+                    }
+                        moveY = -1;
                 }
                 else if (Input.GetKey("down") && door)
                 {
@@ -132,6 +150,7 @@ public class Character : MonoBehaviour {
         {
             GameManager.instance.malusUpdate(it, playerNumberB);
         }
+        itemsLeft -= 1;
         Destroy(crItem);
         crItem = null;
         item = false;
