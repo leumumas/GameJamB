@@ -11,8 +11,8 @@ public class END : MonoBehaviour {
     {
         Destroy(GameObject.Find("Player_0"));
         Destroy(GameObject.Find("Player_1"));
-        Wins[0]=GameManager.instance.player[0].wins;
-        Wins[1] = GameManager.instance.player[1].wins;
+        Wins[0]= GameObject.Find("ManagerObject").GetComponent<GameManager>().player[0].wins;
+        Wins[1] =  GameObject.Find("ManagerObject").GetComponent<GameManager>().player[1].wins;
         Destroy(GameObject.Find("ManagerObject"));
     }
 	

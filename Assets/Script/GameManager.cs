@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     int cycles,
         playerNumber = 2;
     Timer timer;
-    bool firstRound=true;
+    bool firstRound = true, start = true;
     private GameObject instanciatedObject;
     public List<Character> player = new List<Character>();
     private GameObject menuScript;
@@ -47,28 +47,21 @@ public class GameManager : MonoBehaviour
         itemSlidP1 = GameObject.Find("ItemsSlidP1").GetComponent<Slider>();
         itemSlidP2 = GameObject.Find("ItemsSlidP2").GetComponent<Slider>();
         if (firstRound)
-        { 
-            for (int i = 0; i < playerNumber; i++) //instancie les personnages dynamiquement
-            {
-                instanciatedObject = (GameObject)Instantiate(playerPrefab,new Vector3(i*-80+40, i*-20, 0), Quaternion.identity);
-                instanciatedObject.name = "Player_" + i;
-                player.Add(instanciatedObject.GetComponent<Character>());
-                player[i].GetComponentInChildren<Camera>().Render();
-                player[i].GetComponentInChildren<Camera>().rect=new Rect(0,i*-0.5f+0.5f,1,0.5f);
-                player[i].GetComponent<Character>().playerNumberB = i;
-                player[i].GetComponentInChildren<Camera>().transform.parent = player[i].transform;
-            }
-            firstRound = false;
-        }
-        else
         {
-            for (int i = 0; i < playerNumber; i++) //instancie les personnages dynamiquement es assigne les anciennes valeurs, plusieurs cycles
+            for (int i = 0; i < playerNumber; i++) //instancie les personnages dynamiquement
             {
                 instanciatedObject = (GameObject)Instantiate(playerPrefab, new Vector3(i * -80 + 40, i * -20, 0), Quaternion.identity);
                 instanciatedObject.name = "Player_" + i;
-                instanciatedObject.GetComponent<Character>().wins = player[i].wins;
-                player[i] = instanciatedObject.GetComponent<Character>();
+                player.Add(instanciatedObject.GetComponent<Character>());
+                player[i].GetComponentInChildren<Camera>().Render();
+                player[i].GetComponentInChildren<Camera>().rect = new Rect(0, i * -0.5f + 0.5f, 1, 0.5f);
+                player[i].GetComponent<Character>().playerNumberB = i;
+                player[i].GetComponentInChildren<Camera>().transform.parent = player[i].transform;
             }
+        }
+        else
+        {
+
         }
         player[0].GetComponentInChildren<AudioListener>().enabled = true;
         townSprite = GameObject.FindGameObjectsWithTag("Background");
@@ -78,32 +71,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (timer.minutes>=(int)time)
+        if (start)
         {
-            cycles -= 1;
-            timer.StopTimer();
-            timer.minutes = 0;
-            if (cycles > 0)
-            {
-                SceneManager.LoadScene("Samuel");
-            }
-            else
-            {
-                Destroy(menuScript);
-                SceneManager.LoadScene("End");
-            }
-        }
-        if (timer.minutes <= 0)
-        {
-            foreach (GameObject hou in HousesP1)
-            {
-                Debug.Log(hou.name);
-                hou.SetActive(true);
-            }
-            foreach (GameObject hou in HousesP2)
-            {
-                hou.SetActive(true);
-            }
             timer = GameObject.Find("Timer").GetComponent<Timer>();
             timer.StartTimer();
             setDoors();
@@ -115,6 +84,37 @@ public class GameManager : MonoBehaviour
             foreach (GameObject hou in HousesP2)
             {
                 hou.SetActive(false);
+            }
+            start = false;
+            GetComponentInParent<BonusGenerator>().beginning();
+            if (!firstRound)
+                Characters();
+            firstRound = false;
+        }
+
+        if (timer.minutes >= (int)time)
+        {
+            foreach (GameObject hou in HousesP1)
+            {
+                Debug.Log(hou.name);
+                hou.SetActive(true);
+            }
+            foreach (GameObject hou in HousesP2)
+            {
+                hou.SetActive(true);
+            }
+            cycles -= 1;
+            timer.StopTimer();
+            timer.minutes = 0;
+            if (cycles > 0)
+            {
+                start = true;
+                SceneManager.LoadScene("Samuel");
+            }
+            else
+            {
+                Destroy(menuScript);
+                SceneManager.LoadScene("End");
             }
         }
         itemSlidP1.value = (float)player[0].itemsLeft / 6f;
@@ -132,9 +132,9 @@ public class GameManager : MonoBehaviour
         switch (nbPlayer)
         {
             case 0: player[1].difficulty += it.promptItem;
-                    player[1].reactionTime += it.reactionItem; break;
+                player[1].reactionTime += it.reactionItem; break;
             case 1: player[0].difficulty += it.promptItem;
-                    player[0].reactionTime += it.reactionItem; break;
+                player[0].reactionTime += it.reactionItem; break;
             default: break;
         }
     }
@@ -144,9 +144,9 @@ public class GameManager : MonoBehaviour
         townSprite[nbPlayer].SetActive(view);
         switch (nbPlayer)
         {
-            case 0:  HousesP1[nbHouseP1].SetActive(!view); break;
-                
-            case 1:  HousesP2[nbHouseP2].SetActive(!view); break;
+            case 0: HousesP1[nbHouseP1].SetActive(!view); break;
+
+            case 1: HousesP2[nbHouseP2].SetActive(!view); break;
             default: break;
         }
     }
@@ -157,18 +157,31 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < 10; j++)
             {
-                string house = "Square " + (j + 1) + " " + (i+1);
+                string house = "Square " + (j + 1) + " " + (i + 1);
                 switch (i)
                 {
-                    case 0: 
-                            HousesP1[j] = GameObject.Find(house);
+                    case 0:
+                        HousesP1[j] = GameObject.Find(house);
                         break;
-                    case 1: 
-                            HousesP2[j] = GameObject.Find(house);
+                    case 1:
+                        HousesP2[j] = GameObject.Find(house);
                         break;
                     default: break;
                 }
             }
+        }
+    }
+
+    void Characters()
+    {
+        for (int i = 0; i < playerNumber; i++) //instancie les personnages dynamiquement es assigne les anciennes valeurs, plusieurs cycles
+        {
+            instanciatedObject = (GameObject)Instantiate(playerPrefab, new Vector3(i * -80 + 40, i * -20, 0), Quaternion.identity);
+            instanciatedObject.name = "Player_" + i;
+            instanciatedObject.GetComponent<Character>().wins = player[i].wins;
+            instanciatedObject.GetComponent<Character>().playerNumberB = i;
+            instanciatedObject.GetComponent<Character>().characterUpdate();
+            player[i] = instanciatedObject.GetComponent<Character>();
         }
     }
 }

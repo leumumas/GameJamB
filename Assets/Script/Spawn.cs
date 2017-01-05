@@ -10,8 +10,8 @@ public class Spawn : MonoBehaviour {
     void Start() {
         switch (playerSide)
         {
-            case 0: GameManager.instance.SpawnPointP1.Add(this.transform.gameObject); break;
-            case 1: GameManager.instance.SpawnPointP2.Add(this.transform.gameObject); break;
+            case 0:  GameObject.Find("ManagerObject").GetComponent<GameManager>().SpawnPointP1.Add(this.transform.gameObject); break;
+            case 1:  GameObject.Find("ManagerObject").GetComponent<GameManager>().SpawnPointP2.Add(this.transform.gameObject); break;
             default: break;
         }
 	}

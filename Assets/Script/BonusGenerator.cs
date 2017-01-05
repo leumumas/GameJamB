@@ -54,19 +54,24 @@ public class BonusGenerator : MonoBehaviour {
         int rnd;
         switch (pl)
         {
-            case 0: rnd = Random.Range(0, GameManager.instance.SpawnPointP1.Count);
-                    spawnP = GameManager.instance.SpawnPointP1[rnd].transform;
-                    GameManager.instance.SpawnPointP1.RemoveAt(rnd);
+            case 0: rnd = Random.Range(0,  GameObject.Find("ManagerObject").GetComponent<GameManager>().SpawnPointP1.Count);
+                    spawnP = GameObject.Find("ManagerObject").GetComponent<GameManager>().SpawnPointP1[rnd].transform;
+                    GameObject.Find("ManagerObject").GetComponent<GameManager>().SpawnPointP1.RemoveAt(rnd);
                     InstObject = (GameObject)Instantiate(bonusItem, spawnP.position, Quaternion.identity);
                     InstObject.GetComponent<Items>().typeSetup(ty);
                     break;
-            case 1: rnd = Random.Range(0, GameManager.instance.SpawnPointP1.Count);
-                    spawnP = GameManager.instance.SpawnPointP2[rnd].transform;
-                    GameManager.instance.SpawnPointP2.RemoveAt(rnd);
+            case 1: rnd = Random.Range(0,  GameObject.Find("ManagerObject").GetComponent<GameManager>().SpawnPointP1.Count);
+                    spawnP = GameObject.Find("ManagerObject").GetComponent<GameManager>().SpawnPointP2[rnd].transform;
+                    GameObject.Find("ManagerObject").GetComponent<GameManager>().SpawnPointP2.RemoveAt(rnd);
                     InstObject = (GameObject)Instantiate(bonusItem, spawnP.position, Quaternion.identity);
                     InstObject.GetComponent<Items>().typeSetup(ty);
                     break;
             default: break;
         }
+    }
+
+    public void beginning()
+    {
+        begin = true;
     }
 }

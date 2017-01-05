@@ -35,7 +35,7 @@ public class Timer : MonoBehaviour {
         {
             Debug.Log("salut");
             timer = timer + Time.deltaTime * 2;
-            timerSlider.value = timer / GameManager.instance.time;
+            timerSlider.value = timer /  GameObject.Find("ManagerObject").GetComponent<GameManager>().time;
             minutes = (int)timer;
             Debug.Log(timer);
         }
