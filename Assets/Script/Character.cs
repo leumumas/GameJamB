@@ -8,18 +8,21 @@ public class Character : MonoBehaviour {
     public int hearts,
                 difficulty,
                 speed,
-                wins;
+                wins,
+                keyLeft;
     //Movements
     private float moveY = 0f, moveX = 0f;
     public float reactionTime;
     //Triggers
-    public bool door, item, outside, shield;
+    public bool door, item, outside, shield, isPhase1;
     public GameObject crItem, triggerPop;
     Animator anim;
     public Sprite Robot;
     public RuntimeAnimatorController robotAnim;
     public int itemsLeft;
     public int nbBonus, nbMalus;
+
+    private KeyCode currentKey;
 
     void Start () {
         DontDestroyOnLoad(gameObject);
@@ -39,10 +42,51 @@ public class Character : MonoBehaviour {
         }
         nbBonus = 0;
         nbMalus = 0;
+        isPhase1 = true;
     }
 
 	void Update () {
+        if (isPhase1)
+            phase1();
+        if (!isPhase1)
+            phase2();
+    }
 
+    public void updateStats (Items it)
+    {
+        //Debug.Log(crItem.name);
+        if (it.isBonus)
+        {
+            if (nbBonus < 3)
+            {
+                difficulty += it.promptItem;
+                reactionTime += it.reactionItem;
+                if (it.promptItem == 0 && it.reactionItem == 0)
+                    shield = true;
+                Destroy(crItem);
+                nbBonus += 1;
+                itemsLeft -= 1;
+                crItem = null;
+                item = false;
+            }
+        }
+        else
+        {
+            if (nbMalus < 3)
+            {
+                GameManager.instance.malusUpdate(it, playerNumberB);
+                Destroy(crItem);
+                nbMalus += 1;
+                itemsLeft -= 1;
+                crItem = null;
+                item = false;
+            }
+                
+        }
+    }
+
+    void phase1()
+    {
         switch (playerNumberB)
         {
             case 0:
@@ -84,8 +128,8 @@ public class Character : MonoBehaviour {
                     moveY = 1;
                 }
                 else
-                moveY = 0;
-                Debug.Log("1Y"+moveY);
+                    moveY = 0;
+                Debug.Log("1Y" + moveY);
                 break;
             case 1:
                 // Player 2 moving left or right
@@ -116,7 +160,7 @@ public class Character : MonoBehaviour {
                         if (!outside)
                             updateStats(crItem.GetComponent<Items>());
                     }
-                        moveY = -1;
+                    moveY = -1;
                 }
                 else if (Input.GetKey("down") && door)
                 {
@@ -126,7 +170,7 @@ public class Character : MonoBehaviour {
                 }
                 else
                     moveY = 0;
-                Debug.Log("2Y"+moveY);
+                Debug.Log("2Y" + moveY);
                 break;
             default:
                 Debug.Log("What the fuck");
@@ -140,36 +184,107 @@ public class Character : MonoBehaviour {
         Debug.Log(playerNumberB + "" + door);
     }
 
-    public void updateStats (Items it)
+    void phase2()
     {
-        //Debug.Log(crItem.name);
-        if (it.isBonus)
+        switch (playerNumberB)
         {
-            if (nbBonus < 3)
-            {
-                difficulty += it.promptItem;
-                reactionTime += it.reactionItem;
-                if (it.promptItem == 0 && it.reactionItem == 0)
-                    shield = true;
-                Destroy(crItem);
-                nbBonus += 1;
-                itemsLeft -= 1;
-                crItem = null;
-                item = false;
-            }
+            case 0:
+                    while (keyLeft != 0)
+                    {
+                        currentKey = generateNewKeyPlayer1();
+                        if (Input.GetKey(KeyCode.W))
+                            if (currentKey == KeyCode.W)
+                                goodKeyPressed();
+                            else
+                                badKeyPressed();
+                        else if (Input.GetKey(KeyCode.A))
+                            if (currentKey == KeyCode.A)
+                                goodKeyPressed();
+                            else
+                                badKeyPressed();
+                        else if (Input.GetKey(KeyCode.S))
+                            if (currentKey == KeyCode.S)
+                                goodKeyPressed();
+                            else
+                                badKeyPressed();
+                        else if (Input.GetKey(KeyCode.D))
+                            if (currentKey == KeyCode.D)
+                                goodKeyPressed();
+                            else
+                                badKeyPressed();
+                    }
+            break;
+            case 1:
+                while (keyLeft != 0)
+                {
+                    currentKey = generateNewKeyPlayer2();
+                    if (Input.GetKey(KeyCode.UpArrow))
+                        if (currentKey == KeyCode.UpArrow)
+                            goodKeyPressed();
+                        else
+                            badKeyPressed();
+                    else if (Input.GetKey(KeyCode.LeftArrow))
+                        if (currentKey == KeyCode.LeftArrow)
+                            goodKeyPressed();
+                        else
+                            badKeyPressed();
+                    else if (Input.GetKey(KeyCode.DownArrow))
+                        if (currentKey == KeyCode.DownArrow)
+                            goodKeyPressed();
+                        else
+                            badKeyPressed();
+                    else if (Input.GetKey(KeyCode.RightArrow))
+                        if (currentKey == KeyCode.RightArrow)
+                            goodKeyPressed();
+                        else
+                            badKeyPressed();
+                }
+            break;
         }
+    }
+
+    KeyCode generateNewKeyPlayer1()
+    {
+        switch (Random.Range(0, 4))
+        {
+            case 0:
+                return KeyCode.W;
+            case 1:
+                return KeyCode.A;
+            case 2:
+                return KeyCode.S;
+            case 3:
+                return KeyCode.D;
+            default: return KeyCode.W;
+        }
+    }
+
+    KeyCode generateNewKeyPlayer2()
+    {
+        switch (Random.Range(0, 4))
+        {
+            case 0:
+                return KeyCode.UpArrow;
+            case 1:
+                return KeyCode.LeftArrow;
+            case 2:
+                return KeyCode.DownArrow;
+            case 3:
+                return KeyCode.RightArrow;
+            default: return KeyCode.UpArrow;
+        }
+    }
+
+    void goodKeyPressed()
+    {
+        keyLeft--;
+    }
+
+    void badKeyPressed()
+    {
+        if (shield)
+            shield = false;
         else
-        {
-            if (nbMalus < 3)
-            {
-                GameManager.instance.malusUpdate(it, playerNumberB);
-                Destroy(crItem);
-                nbMalus += 1;
-                itemsLeft -= 1;
-                crItem = null;
-                item = false;
-            }
-                
-        }
+            hearts--;
     }
 }
