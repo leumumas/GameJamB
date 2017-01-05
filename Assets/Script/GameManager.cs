@@ -33,8 +33,8 @@ public class GameManager : MonoBehaviour
         else if (instance != this)
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
-        menuScript = GameObject.Find("GameObject");
-        setStartLevel();
+        /*menuScript = GameObject.Find("GameObject");
+        setStartLevel();*/
     }
 
 
@@ -148,13 +148,11 @@ public class GameManager : MonoBehaviour
     {
         if (view)
         {
-            townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 1;
-            townSprite[nbPlayer].SetActive(view);
+            townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 3;
         }
         else
         {
             townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 1;
-            townSprite[nbPlayer].SetActive(view);
         }
         switch (nbPlayer)
         {
