@@ -34,6 +34,7 @@ public class Character : MonoBehaviour {
         item = false;
         reactionTime = 5f;
         shield = false;
+        outside = true;
         if (playerNumberB == 1)
         {
             GetComponentInParent<SpriteRenderer>().sprite = Robot;
@@ -107,12 +108,17 @@ public class Character : MonoBehaviour {
                 //Player 1 moving up or down
                 if (Input.GetKey(KeyCode.W) && door)
                 {
-                   outside = false;
-                     GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
-                    moveY = 1;
-                    if (outside == false)
+                    if (outside)
                     {
-
+                        outside = false;
+                        GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
+                        moveY = 1;
+                    }
+                    else
+                    {
+                        outside = true;
+                        GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
+                        moveY = 1;
                     }
                 }
                 else if (Input.GetKey(KeyCode.S) && item)
@@ -122,12 +128,6 @@ public class Character : MonoBehaviour {
                         if (!outside)
                             updateStats(crItem.GetComponent<Items>());
                     }
-                    moveY = 1;
-                }
-                else if (Input.GetKey(KeyCode.S) && door)
-                {
-                    outside = true;
-                     GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
                     moveY = 1;
                 }
                 else
@@ -152,9 +152,18 @@ public class Character : MonoBehaviour {
                 //Player 2 moving up or down
                 if (Input.GetKey("up") && door)
                 {
-                    outside = false;
-                     GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
-                    moveY = 1;
+                    if (outside)
+                    {
+                        outside = false;
+                        GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
+                        moveY = 1;
+                    }
+                    else
+                    {
+                        outside = true;
+                        GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
+                        moveY = 1;
+                    }
                 }
                 else if (Input.GetKey("down") && item)
                 {
@@ -163,12 +172,6 @@ public class Character : MonoBehaviour {
                         if (!outside)
                             updateStats(crItem.GetComponent<Items>());
                     }
-                    moveY = -1;
-                }
-                else if (Input.GetKey("down") && door)
-                {
-                    outside = true;
-                     GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
                     moveY = -1;
                 }
                 else

@@ -33,8 +33,8 @@ public class GameManager : MonoBehaviour
         else if (instance != this)
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
-        /*menuScript = GameObject.Find("GameObject");
-        setStartLevel();*/
+        menuScript = GameObject.Find("GameObject");
+        setStartLevel();
     }
 
 
@@ -75,6 +75,8 @@ public class GameManager : MonoBehaviour
         {
             timer = GameObject.Find("Timer").GetComponent<Timer>();
             timer.StartTimer();
+            itemSlidP1 = GameObject.Find("ItemsSlidP1").GetComponent<Slider>();
+            itemSlidP2 = GameObject.Find("ItemsSlidP2").GetComponent<Slider>();
             setDoors();
             foreach (GameObject hou in HousesP1)
             {
@@ -148,7 +150,7 @@ public class GameManager : MonoBehaviour
     {
         if (view)
         {
-            townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 3;
+            townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 4;
         }
         else
         {
