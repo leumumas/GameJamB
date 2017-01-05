@@ -146,7 +146,16 @@ public class GameManager : MonoBehaviour
 
     public void setTownVisibility(int nbPlayer, bool view)
     {
-        townSprite[nbPlayer].SetActive(view);
+        if (view)
+        {
+            townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 1;
+            townSprite[nbPlayer].SetActive(view);
+        }
+        else
+        {
+            townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 1;
+            townSprite[nbPlayer].SetActive(view);
+        }
         switch (nbPlayer)
         {
             case 0: HousesP1[nbHouseP1].SetActive(!view); break;
@@ -187,6 +196,10 @@ public class GameManager : MonoBehaviour
             instanciatedObject.GetComponent<Character>().playerNumberB = i;
             instanciatedObject.GetComponent<Character>().characterUpdate();
             player[i] = instanciatedObject.GetComponent<Character>();
+            player[i].GetComponentInChildren<Camera>().Render();
+            player[i].GetComponentInChildren<Camera>().rect = new Rect(0, i * -0.5f + 0.5f, 1, 0.5f);
+            player[i].GetComponent<Character>().playerNumberB = i;
+            player[i].GetComponentInChildren<Camera>().transform.parent = player[i].transform;
         }
     }
 }
