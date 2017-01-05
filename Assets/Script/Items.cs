@@ -14,21 +14,7 @@ public class Items : MonoBehaviour {
 
     private void Awake()
     {
-        switch (type) {
-            case 0: SetupItems("Instant Orb", true, 0, -1);
-                break;
-            case 1: SetupItems("Lag Orb", false, 0, 1);
-                break;
-            case 2: SetupItems("Cover", true, -1, 0);
-                break;
-            case 3: SetupItems("Rain", false, 2, 0);
-                break;
-            case 4: SetupItems("shield", true, 0, 0);
-                break;
-            default: break;
-        }
-        GetComponent<SpriteRenderer>().sprite = itemSprites[type];
-
+        typeSetup(type);
     }
 
     void Start () {
@@ -38,6 +24,31 @@ public class Items : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void typeSetup (int ty)
+    {
+        type = ty;
+        switch (type)
+        {
+            case 0:
+                SetupItems("Instant Orb", true, 0, -1);
+                break;
+            case 1:
+                SetupItems("Lag Orb", false, 0, 1);
+                break;
+            case 2:
+                SetupItems("Cover", true, -1, 0);
+                break;
+            case 3:
+                SetupItems("Rain", false, 2, 0);
+                break;
+            case 4:
+                SetupItems("shield", true, 0, 0);
+                break;
+            default: break;
+        }
+        GetComponent<SpriteRenderer>().sprite = itemSprites[type];
+    }
 
     void SetupItems(string name, bool bonus, int prompt, int reaction)
     {
