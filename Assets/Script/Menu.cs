@@ -6,11 +6,16 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    public int nbCycles = 0;
+    public int nbCycles = 1;
     public int nbClick = 0;
-    public GameObject playButton;
+	public GameObject playButton;
+	public GameObject background;
+	public GameObject cycle1;
+	public GameObject cycle3;
+	public GameObject cycle5;
     public GameObject controlPannel;
     public GameObject menu;
+	private bool ShowControl = false;
 
     void Start ()
     {
@@ -22,10 +27,19 @@ public class Menu : MonoBehaviour
 	void Update ()
     {
         if (nbCycles != 0 )
-            playButton.SetActive(true);
-
-        if (nbClick != 0)
-            controlPannel.SetActive(true);
+			playButton.SetActive(true);
+		switch (nbCycles)
+		{
+		case 1:
+			background.transform.position = cycle1.transform.position + new Vector3 (20, 15, 0);
+			break;
+		case 3:	background.transform.position = cycle3.transform.position + new Vector3(20,15,0);
+			break;	
+		case 5:	background.transform.position = cycle5.transform.position + new Vector3(20,15,0);
+			break;
+		default: background.transform.position = new Vector3(130,0,0);
+			break;
+		}
     }
 
     public void DualCycles(int NbCycle)
@@ -33,8 +47,15 @@ public class Menu : MonoBehaviour
         nbCycles = NbCycle;
     }
     public void ShowControls(int Nbclicks)
-    {
-        nbClick = Nbclicks;
+	{
+		if (!ShowControl) {			
+			controlPannel.SetActive (true);
+			ShowControl = true;
+		}
+		else {			
+			controlPannel.SetActive (false);
+			ShowControl = false;
+		}
     }
 
     public void StartGame()

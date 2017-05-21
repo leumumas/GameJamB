@@ -106,7 +106,7 @@ public class Character : MonoBehaviour {
 
 
                 //Player 1 moving up or down
-                if (Input.GetKey(KeyCode.W) && door)
+                if (Input.GetKeyDown(KeyCode.W) && door)
                 {
                     if (outside)
                     {
@@ -121,7 +121,7 @@ public class Character : MonoBehaviour {
                         moveY = 1;
                     }
                 }
-                else if (Input.GetKey(KeyCode.S) && item)
+                else if (Input.GetKeyDown(KeyCode.S) && item)
                 {
                     if (itemsLeft > 0)
                     {
@@ -132,7 +132,6 @@ public class Character : MonoBehaviour {
                 }
                 else
                     moveY = 0;
-                Debug.Log("1Y" + moveY);
                 break;
             case 1:
                 // Player 2 moving left or right
@@ -150,7 +149,7 @@ public class Character : MonoBehaviour {
                     moveX = 0f;
 
                 //Player 2 moving up or down
-                if (Input.GetKey("up") && door)
+                if (Input.GetKeyDown("up") && door)
                 {
                     if (outside)
                     {
@@ -165,7 +164,7 @@ public class Character : MonoBehaviour {
                         moveY = 1;
                     }
                 }
-                else if (Input.GetKey("down") && item)
+                else if (Input.GetKeyDown("down") && item)
                 {
                     if (itemsLeft > 0)
                     {
@@ -176,10 +175,8 @@ public class Character : MonoBehaviour {
                 }
                 else
                     moveY = 0;
-                Debug.Log("2Y" + moveY);
                 break;
             default:
-                Debug.Log("What the fuck");
                 break;
         }
         if (door)
@@ -187,7 +184,6 @@ public class Character : MonoBehaviour {
         else
             triggerPop.SetActive(false);
         anim.SetFloat("Moving", moveX);
-        Debug.Log(playerNumberB + "" + door);
     }
 
     void phase2()
@@ -198,22 +194,22 @@ public class Character : MonoBehaviour {
                     while (keyLeft != 0)
                     {
                         currentKey = generateNewKeyPlayer1();
-                        if (Input.GetKey(KeyCode.W))
+                        if (Input.GetKeyDown(KeyCode.W))
                             if (currentKey == KeyCode.W)
                                 goodKeyPressed();
                             else
                                 badKeyPressed();
-                        else if (Input.GetKey(KeyCode.A))
+                        else if (Input.GetKeyDown(KeyCode.A))
                             if (currentKey == KeyCode.A)
                                 goodKeyPressed();
                             else
                                 badKeyPressed();
-                        else if (Input.GetKey(KeyCode.S))
+                        else if (Input.GetKeyDown(KeyCode.S))
                             if (currentKey == KeyCode.S)
                                 goodKeyPressed();
                             else
                                 badKeyPressed();
-                        else if (Input.GetKey(KeyCode.D))
+                        else if (Input.GetKeyDown(KeyCode.D))
                             if (currentKey == KeyCode.D)
                                 goodKeyPressed();
                             else
@@ -224,22 +220,22 @@ public class Character : MonoBehaviour {
                 while (keyLeft != 0)
                 {
                     currentKey = generateNewKeyPlayer2();
-                    if (Input.GetKey(KeyCode.UpArrow))
+                    if (Input.GetKeyDown(KeyCode.UpArrow))
                         if (currentKey == KeyCode.UpArrow)
                             goodKeyPressed();
                         else
                             badKeyPressed();
-                    else if (Input.GetKey(KeyCode.LeftArrow))
+                    else if (Input.GetKeyDown(KeyCode.LeftArrow))
                         if (currentKey == KeyCode.LeftArrow)
                             goodKeyPressed();
                         else
                             badKeyPressed();
-                    else if (Input.GetKey(KeyCode.DownArrow))
+                    else if (Input.GetKeyDown(KeyCode.DownArrow))
                         if (currentKey == KeyCode.DownArrow)
                             goodKeyPressed();
                         else
                             badKeyPressed();
-                    else if (Input.GetKey(KeyCode.RightArrow))
+                    else if (Input.GetKeyDown(KeyCode.RightArrow))
                         if (currentKey == KeyCode.RightArrow)
                             goodKeyPressed();
                         else

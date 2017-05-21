@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        time = 30;
+        time = 60;
         timer = GameObject.Find("Timer").GetComponent<Timer>();
         timer.StartTimer();
         itemSlidP1 = GameObject.Find("ItemsSlidP1").GetComponent<Slider>();
@@ -80,7 +80,6 @@ public class GameManager : MonoBehaviour
             setDoors();
             foreach (GameObject hou in HousesP1)
             {
-                Debug.Log(hou.name);
                 hou.SetActive(false);
             }
             foreach (GameObject hou in HousesP2)
@@ -101,7 +100,6 @@ public class GameManager : MonoBehaviour
         {
             foreach (GameObject hou in HousesP1)
             {
-                Debug.Log(hou.name);
                 hou.SetActive(true);
             }
             foreach (GameObject hou in HousesP2)
@@ -120,12 +118,11 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Destroy(menuScript);
+                //Destroy(menuScript);
                 SceneManager.LoadScene("End");
             }
         }
         itemSlidP1.value = (float)player[0].itemsLeft / 6f;
-        Debug.Log(itemSlidP1.value);
         itemSlidP2.value = player[1].itemsLeft / 6f;
     }
 
