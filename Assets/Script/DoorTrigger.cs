@@ -17,8 +17,8 @@ public class DoorTrigger : MonoBehaviour {
 	}
     //When in front of door
     void OnTriggerEnter2D(Collider2D collider) {
-        collider.gameObject.GetComponent<Character>().door = true;
-        int nbPlayer = collider.gameObject.GetComponent<Character>().playerNumberB;
+		collider.gameObject.GetComponent <Player>().door = true;
+		int nbPlayer = collider.gameObject.GetComponent<Player>().playerNumberB;
         switch(nbPlayer)
         {
             case 0: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP1 = nbHouse; break;
@@ -30,14 +30,15 @@ public class DoorTrigger : MonoBehaviour {
     //When quitting door
     void OnTriggerExit2D(Collider2D collider)
     {
-        int nbPlayer = collider.gameObject.GetComponent<Character>().playerNumberB;
-        collider.gameObject.GetComponent<Character>().door = false;
-        switch (nbPlayer)
-        {
-            case 0: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP1 = 0; break;
+		int nbPlayer = collider.gameObject.GetComponent<Player>().playerNumberB;
+		collider.gameObject.GetComponent<Player>().door = false;
+		if (collider.gameObject.GetComponent<Player>().outside) 
+	        switch (nbPlayer)
+	        {
+	            case 0: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP1 = -1; break;
 
-            case 1: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP2 = 0; break;
-            default: break;
-        }
+	            case 1: GameObject.Find("ManagerObject").GetComponent<GameManager>().nbHouseP2 = -1; break;
+	            default: break;
+	        }
     }
 }

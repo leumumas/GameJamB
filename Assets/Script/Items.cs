@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Items : MonoBehaviour {
     //is the item a bonus
-    public bool isBonus;
+	public bool isBonus;
+	public int nbHouse;
     //what type of item
     public int type,
         promptItem,
         reactionItem;
     public Sprite[] itemSprites = new Sprite[5];
     private string nameItem;
+	public int itemNb;
 
     private void Awake()
     {

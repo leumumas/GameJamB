@@ -63,6 +63,6 @@ public class Menu : MonoBehaviour
         enabled = false;
         menu.SetActive(false);
 
-        SceneManager.LoadScene("Samuel");
+		SceneManager.LoadScene("VersusSameMap");
     }
 }

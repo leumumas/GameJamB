@@ -16,13 +16,13 @@ public class ItemsTrigger : MonoBehaviour {
     //When in front of item
     void OnTriggerEnter2D(Collider2D collider)
     {
-        collider.gameObject.GetComponent<Character>().item = true;
-        collider.gameObject.GetComponent<Character>().crItem = transform.root.gameObject;
+        collider.gameObject.GetComponent<Player>().item = true;
+		collider.gameObject.GetComponent<Player>().crItem = transform.root.gameObject;
     }
     //When far of the item
     void OnTriggerExit2D(Collider2D collider)
     {
-        collider.gameObject.GetComponent<Character>().item = false;
-        collider.gameObject.GetComponent<Character>().crItem = null;
+		collider.gameObject.GetComponent<Player>().item = false;
+		collider.gameObject.GetComponent<Player>().crItem = null;
     }
 }

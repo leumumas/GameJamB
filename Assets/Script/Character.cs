@@ -14,7 +14,7 @@ public class Character : MonoBehaviour {
     private float moveY = 0f, moveX = 0f;
     public float reactionTime;
     //Triggers
-    public bool door, item, outside, shield, isPhase1;
+	public bool door, item, outside, shield, isPhase1;
     public GameObject crItem, triggerPop;
     Animator anim;
     public Sprite Robot;

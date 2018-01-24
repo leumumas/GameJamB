@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     Timer timer;
     bool firstRound = true, start = true;
     private GameObject instanciatedObject;
-    public List<Character> player = new List<Character>();
+	public List<Player> player = new List<Player>();
     private GameObject menuScript;
     public GameObject playerPrefab;
     GameObject[] townSprite;
@@ -22,9 +22,12 @@ public class GameManager : MonoBehaviour
     GameObject[] HousesP2 = new GameObject[10];
     public List<GameObject> SpawnPointP1;
     public List<GameObject> SpawnPointP2;
-    public float time = 60;
+    public float time = 360;
     Slider itemSlidP1, itemSlidP2;
-    public GameObject timerObject;
+	public GameObject timerObject;
+	public Items[] spawnedBonusP1 = new Items[13];
+	public Items[] spawnedBonusP2 = new Items[13];
+	float CharaY = 0;
 
     private void Awake()
     {
@@ -41,7 +44,7 @@ public class GameManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        time = 60;
+        time = 360;
         timer = GameObject.Find("Timer").GetComponent<Timer>();
         timer.StartTimer();
         itemSlidP1 = GameObject.Find("ItemsSlidP1").GetComponent<Slider>();
@@ -50,12 +53,12 @@ public class GameManager : MonoBehaviour
         {
             for (int i = 0; i < playerNumber; i++) //instancie les personnages dynamiquement
             {
-                instanciatedObject = (GameObject)Instantiate(playerPrefab, new Vector3(i * -80 + 40, i * -20, 0), Quaternion.identity);
+				instanciatedObject = (GameObject)Instantiate(playerPrefab, new Vector3(i * -80 + 40, i * CharaY, 0), Quaternion.identity);
                 instanciatedObject.name = "Player_" + i;
-                player.Add(instanciatedObject.GetComponent<Character>());
+                player.Add(instanciatedObject.GetComponent<Player>());
                 player[i].GetComponentInChildren<Camera>().Render();
                 player[i].GetComponentInChildren<Camera>().rect = new Rect(0, i * -0.5f + 0.5f, 1, 0.5f);
-                player[i].GetComponent<Character>().playerNumberB = i;
+				player[i].GetComponent<Player>().playerNumberB = i;
                 player[i].GetComponentInChildren<Camera>().transform.parent = player[i].transform;
             }
         }
@@ -63,6 +66,8 @@ public class GameManager : MonoBehaviour
         {
 
         }
+		nbHouseP1 = -1;
+		nbHouseP2 = -1;
         player[0].GetComponentInChildren<AudioListener>().enabled = true;
         townSprite = GameObject.FindGameObjectsWithTag("Background");
         setDoors();
@@ -71,30 +76,35 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (start)
-        {
-            timer = GameObject.Find("Timer").GetComponent<Timer>();
-            timer.StartTimer();
-            itemSlidP1 = GameObject.Find("ItemsSlidP1").GetComponent<Slider>();
-            itemSlidP2 = GameObject.Find("ItemsSlidP2").GetComponent<Slider>();
-            setDoors();
-            foreach (GameObject hou in HousesP1)
-            {
-                hou.SetActive(false);
-            }
-            foreach (GameObject hou in HousesP2)
-            {
-                hou.SetActive(false);
-            }
-            start = false;
-            townSprite = GameObject.FindGameObjectsWithTag("Background");
-            SpawnPointP1 = new List<GameObject>(GameObject.FindGameObjectsWithTag("InsideP1"));
-            SpawnPointP2 = new List<GameObject>(GameObject.FindGameObjectsWithTag("insideP2"));
-            GetComponentInParent<BonusGenerator>().beginning();
-            if (!firstRound)
-                Characters();
-            firstRound = false;
-        }
+		if (start) {
+			timer = GameObject.Find ("Timer").GetComponent<Timer> ();
+			timer.StartTimer ();
+			itemSlidP1 = GameObject.Find ("ItemsSlidP1").GetComponent<Slider> ();
+			itemSlidP2 = GameObject.Find ("ItemsSlidP2").GetComponent<Slider> ();
+			setDoors ();
+			foreach (GameObject hou in HousesP1) {
+				hou.SetActive (false);
+			}
+			foreach (GameObject hou in HousesP2) {
+				hou.SetActive (false);
+			}
+			start = false;
+			townSprite = GameObject.FindGameObjectsWithTag ("Background");
+			SpawnPointP1 = new List<GameObject> (GameObject.FindGameObjectsWithTag ("InsideP1"));
+			SpawnPointP2 = new List<GameObject> (GameObject.FindGameObjectsWithTag ("insideP2"));
+			GetComponentInParent<BonusGenerator> ().beginning ();
+			if (!firstRound)
+				Characters ();
+			firstRound = false;
+		} else {
+			if ((nbHouseP1 == nbHouseP2 && (!player[0].outside && !player[1].outside)) || (player[0].outside && player[1].outside)) {
+				player [0].setCullingMask ("110111111111");
+				player [1].setCullingMask ("111011111111");
+			} else {
+				player [0].setCullingMask ("010111111111");
+				player [1].setCullingMask ("101011111111");
+			}
+		}
 
         if (timer.minutes >= (int)time)
         {
@@ -114,7 +124,7 @@ public class GameManager : MonoBehaviour
                 SpawnPointP1.Clear();
                 SpawnPointP2.Clear();
                 start = true;
-                SceneManager.LoadScene("Samuel");
+                SceneManager.LoadScene("VersusSamueMap");
             }
             else
             {
@@ -143,22 +153,36 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void setTownVisibility(int nbPlayer, bool view)
+	public void setTownVisibility(int nbPlayer, bool view)
     {
-        if (view)
-        {
-            townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 4;
-        }
-        else
-        {
-            townSprite[nbPlayer].GetComponent<SpriteRenderer>().sortingOrder = 1;
-        }
         switch (nbPlayer)
         {
-            case 0: HousesP1[nbHouseP1].SetActive(!view); break;
+		case 0: HousesP1[nbHouseP1].SetActive(!view); 
+			if (view)
+			{
+				for (int i = 0; i < spawnedBonusP1.Length; i++)
+					if (spawnedBonusP1[i].nbHouse == nbHouseP1)
+						spawnedBonusP1[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
+			} else {
+				for (int i = 0; i < spawnedBonusP1.Length; i++)
+					if (spawnedBonusP1[i].nbHouse == nbHouseP1)
+						spawnedBonusP1[i].GetComponent<SpriteRenderer>().sortingOrder = 8;
+			}
+			break;
 
-            case 1: HousesP2[nbHouseP2].SetActive(!view); break;
-            default: break;
+		case 1: HousesP2[nbHouseP2].SetActive(!view); 
+			if (view)
+			{
+				for (int i = 0; i < spawnedBonusP2.Length; i++)
+					if (spawnedBonusP2[i].nbHouse == nbHouseP2)
+						spawnedBonusP2[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
+			} else {
+				for (int i = 0; i < spawnedBonusP2.Length; i++)
+					if (spawnedBonusP2[i].nbHouse == nbHouseP2)
+						spawnedBonusP2[i].GetComponent<SpriteRenderer>().sortingOrder = 8;
+			}
+			break;
+        default: break;
         }
     }
 
@@ -187,15 +211,15 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < playerNumber; i++) //instancie les personnages dynamiquement es assigne les anciennes valeurs, plusieurs cycles
         {
-            instanciatedObject = (GameObject)Instantiate(playerPrefab, new Vector3(i * -80 + 40, i * -20, 0), Quaternion.identity);
+			instanciatedObject = (GameObject)Instantiate(playerPrefab, new Vector3(i * -80 + 40, i * CharaY, 0), Quaternion.identity);
             instanciatedObject.name = "Player_" + i;
-            instanciatedObject.GetComponent<Character>().wins = player[i].wins;
-            instanciatedObject.GetComponent<Character>().playerNumberB = i;
-            instanciatedObject.GetComponent<Character>().characterUpdate();
-            player[i] = instanciatedObject.GetComponent<Character>();
+			instanciatedObject.GetComponent<Player>().wins = player[i].wins;
+			instanciatedObject.GetComponent<Player>().playerNumberB = i;
+			instanciatedObject.GetComponent<Player>().characterUpdate();
+            player[i] = instanciatedObject.GetComponent<Player>();
             player[i].GetComponentInChildren<Camera>().Render();
             player[i].GetComponentInChildren<Camera>().rect = new Rect(0, i * -0.5f + 0.5f, 1, 0.5f);
-            player[i].GetComponent<Character>().playerNumberB = i;
+			player[i].GetComponent<Player>().playerNumberB = i;
             player[i].GetComponentInChildren<Camera>().transform.parent = player[i].transform;
         }
     }

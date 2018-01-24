@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Spawn : MonoBehaviour {
 
-    public int playerSide;
+	public int playerSide;
+	public int nbHouse;
 
     // Use this for initialization
     void Start() {
