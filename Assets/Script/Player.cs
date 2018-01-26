@@ -81,6 +81,7 @@ public class Player : MonoBehaviour {
 	public void updateStats (Items it)
 	{
 		int nbItem = crItem.GetComponent<Items> ().itemNb;
+		Items toDelete;
 		//Debug.Log(crItem.name);
 		if (it.isBonus)
 		{
@@ -90,11 +91,17 @@ public class Player : MonoBehaviour {
 				reactionTime += it.reactionItem;
 				if (it.promptItem == 0 && it.reactionItem == 0)
 					shield = true;
-				for (int i = 0; i < GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Length; i++) {
-					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1 [i].itemNb == nbItem)
-						Destroy (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1 [i].gameObject);
-					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2 [i].itemNb == nbItem)
-						Destroy (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2 [i].gameObject);
+				for (int i = 0; i < GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Count; i++) {
+					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1 [i].itemNb == nbItem) {
+						toDelete = GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1[i];
+						GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Remove (toDelete);
+						Destroy (toDelete.gameObject);
+					}
+					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2 [i].itemNb == nbItem) {
+						toDelete = GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2[i];
+						GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2.Remove (toDelete);
+						Destroy (toDelete.gameObject);
+					}
 				}
 				nbBonus += 1;
 				itemsLeft -= 1;
@@ -107,11 +114,17 @@ public class Player : MonoBehaviour {
 			if (nbMalus < 3)
 			{
 				GameObject.Find("ManagerObject").GetComponent<GameManager>().malusUpdate(it, playerNumberB);
-				for (int i = 0; i < GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Length; i++) {
-					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1 [i].itemNb == nbItem)
-						Destroy (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1 [i].gameObject);
-					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2 [i].itemNb == nbItem)
-						Destroy (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2 [i].gameObject);
+				for (int i = 0; i < GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Count; i++) {
+					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1 [i].itemNb == nbItem) {
+						toDelete = GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1[i];
+						GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Remove (toDelete);
+						Destroy (toDelete.gameObject);
+					}
+					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2 [i].itemNb == nbItem) {
+						toDelete = GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2[i];
+						GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2.Remove (toDelete);
+						Destroy (toDelete.gameObject);
+					}
 				}
 				nbMalus += 1;
 				itemsLeft -= 1;
@@ -133,8 +146,6 @@ public class Player : MonoBehaviour {
 				moveX = 0;
 			else
 				transform.position += moveX * Vector3.right * speed * Time.deltaTime;
-
-			Debug.Log ("Enter : " + Input.GetAxis ("Enter"));
 			//Player 1 moving up or down
 			if ((Input.GetAxis ("Enter") > 0) && door && !press) {
 				if (outside) {

@@ -66,7 +66,7 @@ public class BonusGenerator : MonoBehaviour {
 		InstObject.GetComponent<Items>().typeSetup(ty);
 		InstObject.GetComponent<Items> ().itemNb = nb;
 		InstObject.layer = 8;
-		GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1[nb] = crItem;
+		GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Add(crItem);
 
 		//player 2
 		InstObject = (GameObject)Instantiate(bonusItem, spawnP.position, Quaternion.identity);
@@ -75,7 +75,7 @@ public class BonusGenerator : MonoBehaviour {
 		InstObject.GetComponent<Items>().typeSetup(ty);
 		InstObject.GetComponent<Items> ().itemNb = nb;
 		InstObject.layer = 9;
-		GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2[nb] = crItem;
+		GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2.Add(crItem);
     }
 
     public void beginning()

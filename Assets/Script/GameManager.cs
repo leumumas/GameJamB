@@ -15,18 +15,18 @@ public class GameManager : MonoBehaviour
 	public List<Player> player = new List<Player>();
     private GameObject menuScript;
     public GameObject playerPrefab;
-    GameObject[] townSprite;
+	GameObject[] townSprite;
     public int nbHouseP1;
     public int nbHouseP2;
-    GameObject[] HousesP1 = new GameObject[10];
-    GameObject[] HousesP2 = new GameObject[10];
+	List<GameObject> HousesP1 = new List<GameObject>();
+	List<GameObject> HousesP2 = new List<GameObject>();
     public List<GameObject> SpawnPointP1;
     public List<GameObject> SpawnPointP2;
     public float time = 360;
     Slider itemSlidP1, itemSlidP2;
 	public GameObject timerObject;
-	public Items[] spawnedBonusP1 = new Items[13];
-	public Items[] spawnedBonusP2 = new Items[13];
+	public List<Items> spawnedBonusP1;
+	public List<Items> spawnedBonusP2;
 	float CharaY = 0;
 
     private void Awake()
@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         time = 360;
+		spawnedBonusP1 = new List<Items>();
+		spawnedBonusP2 = new List<Items>();
         timer = GameObject.Find("Timer").GetComponent<Timer>();
         timer.StartTimer();
         itemSlidP1 = GameObject.Find("ItemsSlidP1").GetComponent<Slider>();
@@ -69,7 +71,7 @@ public class GameManager : MonoBehaviour
 		nbHouseP1 = -1;
 		nbHouseP2 = -1;
         player[0].GetComponentInChildren<AudioListener>().enabled = true;
-        townSprite = GameObject.FindGameObjectsWithTag("Background");
+		townSprite = GameObject.FindGameObjectsWithTag("Background");
         setDoors();
     }
 
@@ -89,7 +91,7 @@ public class GameManager : MonoBehaviour
 				hou.SetActive (false);
 			}
 			start = false;
-			townSprite = GameObject.FindGameObjectsWithTag ("Background");
+			townSprite = GameObject.FindGameObjectsWithTag("Background");
 			SpawnPointP1 = new List<GameObject> (GameObject.FindGameObjectsWithTag ("InsideP1"));
 			SpawnPointP2 = new List<GameObject> (GameObject.FindGameObjectsWithTag ("insideP2"));
 			GetComponentInParent<BonusGenerator> ().beginning ();
@@ -160,11 +162,11 @@ public class GameManager : MonoBehaviour
 		case 0: HousesP1[nbHouseP1].SetActive(!view); 
 			if (view)
 			{
-				for (int i = 0; i < spawnedBonusP1.Length; i++)
+				for (int i = 0; i < spawnedBonusP1.Count; i++)
 					if (spawnedBonusP1[i].nbHouse == nbHouseP1)
 						spawnedBonusP1[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
 			} else {
-				for (int i = 0; i < spawnedBonusP1.Length; i++)
+				for (int i = 0; i < spawnedBonusP1.Count; i++)
 					if (spawnedBonusP1[i].nbHouse == nbHouseP1)
 						spawnedBonusP1[i].GetComponent<SpriteRenderer>().sortingOrder = 8;
 			}
@@ -173,11 +175,11 @@ public class GameManager : MonoBehaviour
 		case 1: HousesP2[nbHouseP2].SetActive(!view); 
 			if (view)
 			{
-				for (int i = 0; i < spawnedBonusP2.Length; i++)
+				for (int i = 0; i < spawnedBonusP2.Count; i++)
 					if (spawnedBonusP2[i].nbHouse == nbHouseP2)
 						spawnedBonusP2[i].GetComponent<SpriteRenderer>().sortingOrder = 4;
 			} else {
-				for (int i = 0; i < spawnedBonusP2.Length; i++)
+				for (int i = 0; i < spawnedBonusP2.Count; i++)
 					if (spawnedBonusP2[i].nbHouse == nbHouseP2)
 						spawnedBonusP2[i].GetComponent<SpriteRenderer>().sortingOrder = 8;
 			}
@@ -196,10 +198,10 @@ public class GameManager : MonoBehaviour
                 switch (i)
                 {
                     case 0:
-                        HousesP1[j] = GameObject.Find(house);
+					HousesP1.Add(GameObject.Find(house));
                         break;
                     case 1:
-                        HousesP2[j] = GameObject.Find(house);
+						HousesP2.Add(GameObject.Find(house));
                         break;
                     default: break;
                 }
