@@ -11,11 +11,12 @@ public class Player : MonoBehaviour {
 	speed,
 	wins,
 	keyLeft;
+	int startDifficulty = 10;
 	//Movements
 	private float moveY = 0f, moveX = 0f;
 	public float reactionTime;
 	//Triggers
-	public bool door, item, outside, shield, isPhase1, press;
+	public bool door, item, outside, shield, isPhase1, press, useRune;
 	public GameObject crItem, triggerPop;
 	Animator anim;
 	public Sprite Robot;
@@ -24,14 +25,20 @@ public class Player : MonoBehaviour {
 	public int nbBonus, nbMalus;
 	int layerP1; //10111111111 1535  1011111111 767  10111111 191
 	int layerP2; //11011111111 1791  1101111111 895  11011111 223
+	GameManager GM;
+	public int runeComplete;
+	public int heartsLost;
 
 	private KeyCode currentKey;
 
 	void Start () {
+		DontDestroyOnLoad (gameObject);
+		GM = GameObject.Find ("ManagerObject").GetComponent<GameManager> ();
+		useRune = false;
 		itemsLeft = 6;
 		anim = GetComponent<Animator>();
 		hearts = 3;
-		difficulty = 15;
+		difficulty = startDifficulty;
 		speed = 5;
 		door = false;
 		item = false;
@@ -71,11 +78,19 @@ public class Player : MonoBehaviour {
 		return Convert.ToInt32 (myStringBinaryNumber, 2);    // From (string)binary to int
 	}
 
+	public void loseLife(int dmg) {
+		hearts = hearts - dmg;
+	}
+
 	void Update () {
-		if (isPhase1)
-			phase1();
-		/*if (!isPhase1)
-			phase2();*/
+		switch (GM.CrPhase) {
+		case 0: 
+			phase1 ();
+			break;
+		case 1: 
+			phase2();
+			break;
+		}
 	}
 
 	public void updateStats (Items it)
@@ -91,15 +106,15 @@ public class Player : MonoBehaviour {
 				reactionTime += it.reactionItem;
 				if (it.promptItem == 0 && it.reactionItem == 0)
 					shield = true;
-				for (int i = 0; i < GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Count; i++) {
-					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1 [i].itemNb == nbItem) {
-						toDelete = GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1[i];
-						GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Remove (toDelete);
+				for (int i = 0; i <GM.spawnedBonusP1.Count; i++) {
+					if (GM.spawnedBonusP1 [i].itemNb == nbItem) {
+						toDelete =GM.spawnedBonusP1[i];
+						GM.spawnedBonusP1.Remove (toDelete);
 						Destroy (toDelete.gameObject);
 					}
-					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2 [i].itemNb == nbItem) {
-						toDelete = GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2[i];
-						GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2.Remove (toDelete);
+					if (GM.spawnedBonusP2 [i].itemNb == nbItem) {
+						toDelete =GM.spawnedBonusP2[i];
+						GM.spawnedBonusP2.Remove (toDelete);
 						Destroy (toDelete.gameObject);
 					}
 				}
@@ -114,15 +129,15 @@ public class Player : MonoBehaviour {
 			if (nbMalus < 3)
 			{
 				GameObject.Find("ManagerObject").GetComponent<GameManager>().malusUpdate(it, playerNumberB);
-				for (int i = 0; i < GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Count; i++) {
-					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1 [i].itemNb == nbItem) {
-						toDelete = GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1[i];
-						GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP1.Remove (toDelete);
+				for (int i = 0; i <GM.spawnedBonusP1.Count; i++) {
+					if (GM.spawnedBonusP1 [i].itemNb == nbItem) {
+						toDelete =GM.spawnedBonusP1[i];
+						GM.spawnedBonusP1.Remove (toDelete);
 						Destroy (toDelete.gameObject);
 					}
-					if (GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2 [i].itemNb == nbItem) {
-						toDelete = GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2[i];
-						GameObject.Find ("ManagerObject").GetComponent<GameManager> ().spawnedBonusP2.Remove (toDelete);
+					if (GM.spawnedBonusP2 [i].itemNb == nbItem) {
+						toDelete =GM.spawnedBonusP2[i];
+						GM.spawnedBonusP2.Remove (toDelete);
 						Destroy (toDelete.gameObject);
 					}
 				}
@@ -150,11 +165,11 @@ public class Player : MonoBehaviour {
 			if ((Input.GetAxis ("Enter") > 0) && door && !press) {
 				if (outside) {
 					outside = false;
-					GameObject.Find ("ManagerObject").GetComponent<GameManager> ().setTownVisibility (playerNumberB, outside);
+					GM.setTownVisibility (playerNumberB, outside);
 					moveY = 1;
 				} else {
 					outside = true;
-					GameObject.Find ("ManagerObject").GetComponent<GameManager> ().setTownVisibility (playerNumberB, outside);
+					GM.setTownVisibility (playerNumberB, outside);
 					moveY = 1;
 				}
 			} else if ((Input.GetAxis ("Get") > 0) && item) {
@@ -225,7 +240,7 @@ public class Player : MonoBehaviour {
 		itemsLeft = 6;
 		anim = GetComponent<Animator>();
 		hearts = 3;
-		difficulty = 15;
+		difficulty = startDifficulty;
 		speed = 5;
 		door = false;
 		item = false;
@@ -243,17 +258,48 @@ public class Player : MonoBehaviour {
 		isPhase1 = true;
 	}
 
+	void phase2()
+	{
+		if (useRune && hearts > 0) {
+			switch (playerNumberB) {
+			case 0:
+				if (Input.GetKeyDown (KeyCode.W))
+					GM.runeBattle.checkRune (playerNumberB, 2, false);
+				if (Input.GetKeyDown(KeyCode.A))
+					GM.runeBattle.checkRune (playerNumberB, 3, false);
+				if (Input.GetKeyDown(KeyCode.S))
+					GM.runeBattle.checkRune (playerNumberB, 0, false);
+				if (Input.GetKeyDown(KeyCode.D))
+					GM.runeBattle.checkRune (playerNumberB, 1, false);
+				break;
+			case 1:
+				if (Input.GetKeyDown (KeyCode.UpArrow))
+					GM.runeBattle.checkRune (playerNumberB, 2, false);
+				if (Input.GetKeyDown(KeyCode.LeftArrow))
+					GM.runeBattle.checkRune (playerNumberB, 3, false);
+				if (Input.GetKeyDown(KeyCode.DownArrow))
+					GM.runeBattle.checkRune (playerNumberB, 0, false);
+				if (Input.GetKeyDown(KeyCode.RightArrow))
+					GM.runeBattle.checkRune (playerNumberB, 1, false);
+				break;
+			}
+		}
+	}
+
+	public float getReaction() {
+		return reactionTime / GM.reactionDifficulty;
+	}
+
 	//à revoir
 
-	/* void phase2()
+	/* 
+	void phase2()
 	{
 		switch (playerNumberB)
 		{
 		case 0:
 			while (keyLeft != 0)
 			{
-				currentKey = generateNewKeyPlayer1();
-				if (Input.GetKeyDown(KeyCode.W))
 				if (currentKey == KeyCode.W)
 					goodKeyPressed();
 				else
@@ -303,7 +349,6 @@ public class Player : MonoBehaviour {
 			break;
 		}
 	}
-
 	KeyCode generateNewKeyPlayer1()
 	{
 		switch (Random.Range(0, 4))
