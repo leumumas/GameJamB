@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
         else if (instance != this)
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
-        menuScript = GameObject.Find("GameObject");
+        menuScript = GameObject.Find("MenuObject");
         setStartLevel();
 		CrPhase = 0;
     }
@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
 		if (SceneManager.GetActiveScene().name == "VersusSameMap") {
-			time = 5;
+			time = 60;
 			spawnedBonusP1 = new List<Items> ();
 			spawnedBonusP2 = new List<Items> ();
 			timer = GameObject.Find ("Timer").GetComponent<Timer> ();
@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
 				}
 			}
 
-			if (timer.minutes >= (int)time) {
+			if (timer.minutes >= (int)time || (player [0].itemsLeft <= 0 && player [1].itemsLeft <= 0)) {
 				foreach (GameObject hou in HousesP1) {
 					hou.SetActive (true);
 				}

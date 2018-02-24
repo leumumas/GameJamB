@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerAdventure : MonoBehaviour
 {
     public int playerNumberB;
     //Attributes Character
@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     private float moveY = 0f, moveX = 0f;
     public float reactionTime;
     //Triggers
-    public bool door, item, outside, shield, isPhase1, press, useRune, street;
+    public bool door, item, outside, shield, isPhase1, press, useRune, street, intersection, grounded;
     public GameObject crItem, triggerPop;
     Animator anim;
     public Sprite Robot;
@@ -27,11 +27,15 @@ public class Player : MonoBehaviour
     int layerP2; //11011111111 1791  1101111111 895  11011111 223
     GameManager GM;
     GameManagerAdventure GMA;
-    public int runeComplete, heartsLost;
-    public float jumpValue;
-    Rigidbody2D playerBody;
-
-    private KeyCode currentKey;
+    public int runeComplete, heartsLost, crStreet;
+    public float jumpValue, angleMove, speedRotation;
+    Vector3 positionMove;
+    Rigidbody playerBody;
+    public DoorTrigger crDoor;
+    public Intersection crIntersection;
+    private float startTime;
+    private float journeyLength;
+    bool intersectionMove;
 
     void Start()
     {
@@ -52,7 +56,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("No GameManagerAdventure");
         }
-        playerBody = gameObject.GetComponent<Rigidbody2D>();
+        playerBody = gameObject.GetComponent<Rigidbody>();
         useRune = false;
         itemsLeft = 6;
         anim = GetComponent<Animator>();
@@ -65,6 +69,8 @@ public class Player : MonoBehaviour
         shield = false;
         outside = true;
         press = false;
+        angleMove = gameObject.transform.rotation.y;
+        intersectionMove = false;
         if (playerNumberB == 1)
         {
             layerP2 = binaryConversion("111011111111");
@@ -81,11 +87,6 @@ public class Player : MonoBehaviour
         nbBonus = 0;
         nbMalus = 0;
         isPhase1 = true;
-    }
-
-    void OnCollisionEnter(Collision2D collision)
-    {
-        string surface = collision.gameObject.tag;
     }
 
     public void setCullingMask(string mask)
@@ -113,22 +114,62 @@ public class Player : MonoBehaviour
         hearts = hearts - dmg;
     }
 
+    public void startRotation()
+    {
+        StartCoroutine("MoveObject");
+        /*Vector3 crAngle = transform.eulerAngles;
+        startTime = Time.time;
+        journeyLength = Vector3.Distance(crAngle, new Vector3(0, angleMove, 0));*/
+    }
+
+    public void setPositionMove(Vector3 pos)
+    {
+        positionMove = pos;
+    }
+
+    IEnumerator MoveObject()
+    {
+        intersectionMove = true;
+        float startTime = Time.time;
+        Vector3 crAngle = transform.eulerAngles;
+        Vector3 crPosition = transform.position;
+        while (Time.time < startTime + speedRotation)
+        {
+            transform.eulerAngles = Vector3.Lerp(crAngle, new Vector3(0, angleMove, 0), (Time.time - startTime) / speedRotation);
+            transform.position = Vector3.Lerp(crPosition, positionMove, (Time.time - startTime) / speedRotation);
+            yield return null;
+        }
+        transform.eulerAngles = new Vector3(0, angleMove, 0);
+        intersectionMove = false;
+    }
+
     void Update()
     {
-        if (GM != null)
+        /*if (gameObject.transform.eulerAngles.y != angleMove)
         {
-            switch (GM.CrPhase)
+            float distCovered = (Time.time - startTime) * speedRotation;
+            float fracJourney = distCovered / journeyLength;
+            Vector3 crAngle = transform.eulerAngles;
+            transform.eulerAngles = Vector3.Lerp(crAngle, new Vector3(0, angleMove, 0), fracJourney);
+            Debug.Log(fracJourney);
+        }*/
+        if (!intersectionMove)
+        {
+            if (GM != null)
             {
-                case 0:
-                    phase1();
-                    break;
-                case 1:
-                    phase2();
-                    break;
+                switch (GM.CrPhase)
+                {
+                    case 0:
+                        phase1();
+                        break;
+                    case 1:
+                        phase2();
+                        break;
+                }
             }
+            else
+                adventureControl();
         }
-        else
-            adventureControl();
     }
 
     void adventureControl()
@@ -141,19 +182,19 @@ public class Player : MonoBehaviour
                 if (moveX <= 0.1 && moveX >= -0.1)
                     moveX = 0;
                 else
-                    transform.position += moveX * Vector3.right * speed * Time.deltaTime;
+                    transform.position += moveX * (Quaternion.Euler(transform.eulerAngles) * Vector3.right) * speed * Time.deltaTime;
                 //Player 1 moving up or down
                 if ((Input.GetButtonDown("Interact")) && door)
                 {
                     if (outside)
                     {
                         outside = false;
-                        GMA.setTownVisibility(playerNumberB, outside);
+                        crDoor.houseVisibility(outside);
                     }
                     else
                     {
                         outside = true;
-                        GMA.setTownVisibility(playerNumberB, outside);
+                        crDoor.houseVisibility(outside);
                     }
                 }
                 else if ((Input.GetButtonDown("Interact")) && item)
@@ -164,10 +205,15 @@ public class Player : MonoBehaviour
                             updateStats(crItem.GetComponent<Items>());
                     }
                 }
-                Debug.Log("Velocity :" + playerBody.velocity.y);
-                if ((Input.GetButtonDown("Jump")))
+                else if ((Input.GetButtonDown("Interact")) && intersection && outside)
                 {
-                    playerBody.AddForce(new Vector2(0, jumpValue), ForceMode2D.Impulse);
+                    crIntersection.switchStreet(crStreet);
+                }
+                //Debug.Log("Velocity :" + playerBody.velocity.y);
+                if ((Input.GetButtonDown("Jump")) && grounded)
+                {
+                    grounded = false;
+                    playerBody.AddForce(new Vector3(0, jumpValue, 0), ForceMode.Impulse);
                 }
                 break;
             case 1:
@@ -184,14 +230,12 @@ public class Player : MonoBehaviour
                     if (outside)
                     {
                         outside = false;
-                        GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
-                        moveY = 1;
+                        crDoor.houseVisibility(outside);
                     }
                     else
                     {
                         outside = true;
-                        GameObject.Find("ManagerObject").GetComponent<GameManager>().setTownVisibility(playerNumberB, outside);
-                        moveY = 1;
+                        crDoor.houseVisibility(outside);
                     }
                 }
                 else if ((Input.GetButtonDown("Interact2")) && item)
@@ -209,11 +253,19 @@ public class Player : MonoBehaviour
             default:
                 break;
         }
-        if (door)
+        if (door || (intersection && outside))
             triggerPop.SetActive(true);
         else
             triggerPop.SetActive(false);
         anim.SetFloat("Moving", moveX);
+    }
+
+    void OnCollisionEnter(Collision hit)
+    {
+        if (hit.gameObject.tag == "ground")
+        {
+            grounded = true;
+        }
     }
 
     public void updateStats(Items it)
@@ -291,7 +343,7 @@ public class Player : MonoBehaviour
                 else
                     transform.position += moveX * Vector3.right * speed * Time.deltaTime;
                 //Player 1 moving up or down
-                if ((Input.GetButtonDown("Interact")) && door)
+                if ((Input.GetButtonDown("Enter")) && door)
                 {
                     if (outside)
                     {
@@ -306,7 +358,7 @@ public class Player : MonoBehaviour
                         moveY = 1;
                     }
                 }
-                else if ((Input.GetButtonDown("Interact")) && item)
+                else if ((Input.GetButtonDown("Get")) && item)
                 {
                     if (itemsLeft > 0)
                     {
@@ -327,7 +379,7 @@ public class Player : MonoBehaviour
                     transform.position += moveX * Vector3.right * speed * Time.deltaTime;
 
                 //Player 2 moving up or down
-                if ((Input.GetButtonDown("Interact2")) && door)
+                if ((Input.GetButtonDown("Enter2")) && door)
                 {
                     if (outside)
                     {
@@ -342,7 +394,7 @@ public class Player : MonoBehaviour
                         moveY = 1;
                     }
                 }
-                else if ((Input.GetButtonDown("Interact2")) && item)
+                else if ((Input.GetButtonDown("Get2")) && item)
                 {
                     if (itemsLeft > 0)
                     {

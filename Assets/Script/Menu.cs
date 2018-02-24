@@ -15,13 +15,16 @@ public class Menu : MonoBehaviour
 	public GameObject cycle5;
     public GameObject controlPannel;
     public GameObject menu;
-	private bool ShowControl = false;
+    public GameObject battleMenu;
+    private bool ShowControl = false;
 
     void Start ()
     {
         playButton.SetActive(false);
         DontDestroyOnLoad(gameObject);
         controlPannel.SetActive(false);
+        battleMenu.SetActive(false);
+        menu.SetActive(true);
     }
 	
 	void Update ()
@@ -64,5 +67,25 @@ public class Menu : MonoBehaviour
         menu.SetActive(false);
 
 		SceneManager.LoadScene("VersusSameMap");
+    }
+
+    public void StartAdventureGame()
+    {
+        enabled = false;
+        menu.SetActive(false);
+
+        SceneManager.LoadScene("Town");
+    }
+
+    public void battleMenuAppear()
+    {
+        battleMenu.SetActive(true);
+        menu.SetActive(false);
+    }
+
+    public void battleMenuBack()
+    {
+        battleMenu.SetActive(false);
+        menu.SetActive(true);
     }
 }

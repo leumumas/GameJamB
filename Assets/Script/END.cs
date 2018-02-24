@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class END : MonoBehaviour {
 
     int[] Wins = new int[2];
+	public Text Winner;
 
 	void Awake ()
     {
@@ -15,6 +17,15 @@ public class END : MonoBehaviour {
         Wins[1] =  GameObject.Find("ManagerObject").GetComponent<GameManager>().player[1].wins;
         Destroy(GameObject.Find("ManagerObject"));
     }
+
+	void Start() {
+		if (Wins [0] > Wins [1])
+			Winner.text = "PLAYER 1 WIN!!";
+		else if(Wins[0] < Wins[1])
+			Winner.text = "PLAYER 2 WIN!!";
+		else
+			Winner.text = "DRAW :P";
+	}
 	
 
 	void Update () {

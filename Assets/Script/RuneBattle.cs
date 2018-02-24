@@ -172,6 +172,7 @@ public class RuneBattle : MonoBehaviour {
 					//TimeP1.minutes = 10;
 					runeTimeOut (playerNb);
 					GM.player [playerNb].runeComplete++;
+					GM.player [playerNb].wins++;
 				} else {
 					//TimeP1.minutes = 10;
 					if (GM.player [playerNb].shield)
@@ -194,6 +195,7 @@ public class RuneBattle : MonoBehaviour {
 					//TimeP2.minutes = 10;
 					runeTimeOut (playerNb);
 					GM.player [playerNb].runeComplete++;
+					GM.player [playerNb].wins++;
 				} else {
 					//TimeP2.minutes = 10;
 					if (GM.player [playerNb].shield)
